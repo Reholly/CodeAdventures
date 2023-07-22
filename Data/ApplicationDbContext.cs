@@ -12,6 +12,12 @@ public class ApplicationDbContext : DbContext
 
     public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder builder)
+    {
+        string connstr = "Host=localhost;Port=5432;Database=CodeAdventures;Username=postgres;Password=12345";
+        builder.UseNpgsql(connstr);
+    }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

@@ -21,7 +21,7 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
         //здесь по сути надо производить Article фабрикой.
         var article = new Article()
         {
-            AuthorId = request.AuthorId,
+            //AuthorId = request.AuthorId,
             Description = request.Description,
             Text = request.Text,
             Title = request.Title,
