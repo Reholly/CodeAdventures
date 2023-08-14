@@ -1,0 +1,17 @@
+@page "/auth/logout"
+@using global::Shared.Requests.Auth
+@using Blazored.LocalStorage
+@inject IAuthControllerClient AuthControllerClient
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var response =  await AuthControllerClient.LogOut(new LogOutRequest());
+        await LocalStorage.RemoveItemAsync("token");
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}

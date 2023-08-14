@@ -1,0 +1,10 @@
+{
+  "ConnectionStrings" : {
+    "DefaultConnection" : "Host=localhost;Port=5432;Database=CodeAdventures;Username=postgres;Password=12345"
+  },
+  "SecurityKey" : "890codesecretjokloiuhouafonorfdFfdDosKASdSS901",
+  "Salt" : "q9DDddiasdiasl991213DNSDSLADfdlkfjsFSKDF91901",
+  "Issuer": "CodeAdventures",
+  "Audience" : "CodeAdventures",
+  "TokenExpiresTime": 1
+}

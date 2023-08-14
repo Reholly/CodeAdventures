@@ -1,0 +1,50 @@
+@page "/auth/login"
+@using global::Shared.DTO
+@using global::Shared.Requests.Auth
+@using Blazored.LocalStorage
+@inject IAuthControllerClient AuthControllerClient
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+<h3>LogIn</h3>
+
+<div>
+<EditForm Model="@_loginDto" OnSubmit="Submit">
+    <p>
+        Почта :<br/>
+        <InputText type="email" @bind-Value="_loginDto.Email"/>
+    </p>
+    <p>
+        Пароль:<br/>
+        <InputText type="password" @bind-Value="_loginDto.Password"/>
+    </p>
+
+    <button type="submit">Войти</button>
+    <span>@_errorMessage</span>
+</EditForm>
+</div>
+@code {
+    private LoginModel _loginDto = new();
+    private string _errorMessage = "";
+    private async Task Submit()
+    {
+        var request = new LogInRequest() { LoginModel = _loginDto };
+        var response = await AuthControllerClient.LogIn(request);
+        if (response.IsSucceeded)
+        {
+            await LocalStorage.SetItemAsync("token", response.Token.Token);
+            
+            await AuthStateProvider.GetAuthenticationStateAsync();
+            
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            _errorMessage = "";
+            foreach (var error in response.Errors)
+            {
+                _errorMessage += error;
+            }
+        }
+    }
+}

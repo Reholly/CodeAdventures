@@ -1,0 +1,55 @@
+@page "/auth/register"
+@using global::Shared.DTO
+@using global::Shared.Requests.Auth
+@inject IAuthControllerClient AuthControllerClient
+@inject NavigationManager NavigationManager
+<h3>Register</h3>
+<div>
+    <EditForm Model="@_registerDto" OnSubmit="Submit">
+         <p>
+            Псеводним:<br/>
+            <InputText @bind-Value="_registerDto.Username"/>
+        </p>
+        <p>
+            Имя:<br/>
+            <InputText @bind-Value="_registerDto.Name"/>
+        </p>
+        <p>
+            Фамилия:<br/>
+            <InputText @bind-Value="_registerDto.Surname"/>
+        </p>
+        <p>
+            Отчество (если есть):<br/>
+            <InputText @bind-Value="_registerDto.Patronymic"/>
+        </p>
+        <p>
+            Почта :<br/>
+            <InputText type="email" @bind-Value="_registerDto.Email"/>
+        </p>
+        <p>
+            Пароль:<br/>
+            <InputText type="password" @bind-Value="_registerDto.Password"/>
+        </p>
+
+        <button type="submit">Зарегистрироваться</button>
+    </EditForm>
+</div>
+@code {
+    private RegisterModel _registerDto = new RegisterModel();
+
+    private async Task Submit()
+    {
+        var request = new CreateUserRequest { RegisterModel = _registerDto };
+        Console.WriteLine(request.RegisterModel.Username);
+        var response = await AuthControllerClient.RegisterUser(request);
+        Console.WriteLine(response.IsSucceeded);
+        
+        foreach (var i in response.Errors)
+        {
+            Console.WriteLine(i.ToString());
+        }
+        
+        if (response.IsSucceeded)
+            NavigationManager.NavigateTo("/auth/login");
+    }
+}

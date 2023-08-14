@@ -10,4 +10,13 @@
       <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Data\Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Requests\Users\" />
+      <Folder Include="Responses\Users\" />
+    </ItemGroup>
+
 </Project>
