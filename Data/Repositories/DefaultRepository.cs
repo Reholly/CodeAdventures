@@ -5,14 +5,16 @@ namespace Data.Repositories;
 public class DefaultRepository<TEntity> : IRepository<TEntity> 
     where TEntity : class
 {
-    private readonly DbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public DefaultRepository(DbContext context)
+    public DefaultRepository(ApplicationDbContext context)
     {
         _context = context;
     }
 
     public async ValueTask<TEntity?> GetAsync(int id) => await _context.Set<TEntity>().FindAsync(id);
+
+    public async Task<ICollection<TEntity>> GetTableAsync() => await _context.Set<TEntity>().ToListAsync();
 
     public async Task AddAsync(TEntity entity)
     {

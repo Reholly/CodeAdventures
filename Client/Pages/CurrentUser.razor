@@ -1,0 +1,39 @@
+@page "/users/current"
+
+<h1>Cascade Auth State</h1>
+
+<p>@authMessage</p>
+<AuthorizeView>
+    <Authorized>
+        @{
+            foreach (var claim in context.User.Claims)
+            {
+                <h1> @claim.Value</h1>
+            }
+        }
+    </Authorized>
+    <NotAuthorized>
+        <span>You're not authorized, buddy.</span>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string authMessage = "The user is NOT authenticated.";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} is authenticated.";
+            }
+        }
+    }
+}
