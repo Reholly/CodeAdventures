@@ -1,6 +1,6 @@
 bin/
 obj/
-config.json
+Server/config.json
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
