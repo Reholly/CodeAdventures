@@ -11,7 +11,8 @@
     {
         var response =  await AuthControllerClient.LogOut(new LogOutRequest());
         await LocalStorage.RemoveItemAsync("token");
+        await LocalStorage.RemoveItemAsync("expiry");
         await AuthStateProvider.GetAuthenticationStateAsync();
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/auth/login");
     }
 }

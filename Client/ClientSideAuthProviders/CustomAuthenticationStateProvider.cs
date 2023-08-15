@@ -19,16 +19,17 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        await CheckTokenExpires();
         string token = await _localStorage.GetItemAsStringAsync("token");
-
+        
         var identity = new ClaimsIdentity();
         _http.DefaultRequestHeaders.Authorization = null;
 
         if (!string.IsNullOrEmpty(token))
         {
             identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-            _http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token.Replace("\"", ""));
+           // _http.DefaultRequestHeaders.Authorization =
+              //  new AuthenticationHeaderValue("Bearer", token.Replace("\"", ""));
         }
 
         var user = new ClaimsPrincipal(identity);
@@ -55,5 +56,22 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
             case 3: base64 += "="; break;
         }
         return Convert.FromBase64String(base64);
+    }
+
+    private async Task CheckTokenExpires()
+    {
+        string expiry = await _localStorage.GetItemAsStringAsync("expiry");
+
+        if (expiry != null)
+        {
+            var clearDate = DateTime.Parse(expiry.Replace("\"", ""));
+            var dateNow = DateTime.Now;
+            var result = clearDate <= dateNow;
+            if (clearDate <= dateNow)
+            {
+                await _localStorage.RemoveItemAsync("token");
+                await _localStorage.RemoveItemAsync("expiry");
+            }
+        }
     }
 }

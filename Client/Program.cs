@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using Client.ClientSideAuthProviders;
 using Client.ControllerClients;
+using Client.HttpHandlers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -17,21 +18,22 @@ internal class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
         builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
         builder.Services.AddBlazoredLocalStorage();
+        
+        builder.Services.AddTransient<AuthHeaderHandler>();
 
         builder.Services.AddRefitClient<IArticlesControllerClient>()
-            .ConfigureHttpClient(config =>
-            {
-                config.BaseAddress = new Uri("http://localhost:5239/api");
-                
-            });
+            .ConfigureHttpClient(config 
+                => config.BaseAddress = new Uri("http://localhost:5239/api"))
+            .AddHttpMessageHandler<AuthHeaderHandler>();
+        
         builder.Services.AddRefitClient<IAuthControllerClient>()
-            .ConfigureHttpClient(config =>
-            {
-                config.BaseAddress = new Uri("http://localhost:5239/api");
-                
-            });
+            .ConfigureHttpClient(config 
+                => config.BaseAddress = new Uri("http://localhost:5239/api"))
+            .AddHttpMessageHandler<AuthHeaderHandler>();
+        
         builder.Services.AddOptions();
         builder.Services.AddAuthorizationCore();
+        
         await builder.Build().RunAsync();
     }
 }

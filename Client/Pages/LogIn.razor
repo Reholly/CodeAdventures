@@ -33,7 +33,7 @@
         if (response.IsSucceeded)
         {
             await LocalStorage.SetItemAsync("token", response.Token.Token);
-            
+            await LocalStorage.SetItemAsync("expiry", response.Token.ExpireTime);
             await AuthStateProvider.GetAuthenticationStateAsync();
             
             Navigation.NavigateTo("/");

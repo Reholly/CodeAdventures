@@ -59,6 +59,8 @@ public class Startup
                     ValidateAudience = true,
                     ValidAudience = _config.GetValue<string>("Audience"),
                     ValidIssuer =  _config.GetValue<string>("Issuer"),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(5),
                     RequireExpirationTime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("SecurityKey")!)),
                     ValidateIssuerSigningKey = true

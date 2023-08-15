@@ -1,4 +1,5 @@
  using MediatR;
+ using Microsoft.AspNetCore.Authorization;
  using Microsoft.AspNetCore.Mvc;
  using Shared.Requests.Articles;
  using Shared.Responses.Articles;
@@ -12,6 +13,7 @@ public class ArticlesController : Controller
 
     public ArticlesController(IMediator mediator) => _mediator = mediator;
         
+    [Authorize(Roles = "Student")]
     [HttpGet]
     public async Task<GetArticlesResponse> GetArticles(
         [FromQuery] GetArticlesRequest request)
