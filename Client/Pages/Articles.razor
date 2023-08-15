@@ -1,43 +1,27 @@
 @page "/articles"
 @using global::Shared.DTO
 @using global::Shared.Requests.Articles
+@using Refit
 @inject IArticlesControllerClient ArticlesControllerClient
 
 
 <h1>Cascade Auth State</h1>
 
-<p>@authMessage</p>
-<AuthorizeView>
-    <Authorized>
-        @{
-            foreach (var claim in context.User.Claims)
-            {
-                <span> @claim.Value.ToString()</span>
-            }
-        }
-    </Authorized>
-    <NotAuthorized>
-        <span>You're not authorized, buddy.</span>
-    </NotAuthorized>
-</AuthorizeView>
+
+@{
+    foreach (var article in _articles)
+    {
+        <p>@article.Title</p>
+    }
+}
 
 @code {
-    private string authMessage = "The user is NOT authenticated.";
-
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
+    private List<ArticleModel> _articles = new List<ArticleModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        if (authenticationState is not null)
-        {
-            var authState = await authenticationState;
-            var user = authState?.User;
-
-            if (user?.Identity is not null && user.Identity.IsAuthenticated)
-            {
-                authMessage = $"{user.Identity.Name} is authenticated.";
-            }
-        }
+        
+        var response = await ArticlesControllerClient.GetArticles(new GetArticlesRequest());
+        _articles = response.Articles.ToList();
     }
 }

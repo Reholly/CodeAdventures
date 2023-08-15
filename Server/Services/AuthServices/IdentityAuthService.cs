@@ -48,7 +48,7 @@ public class IdentityAuthService : IAuthService
                 Errors = new []{ $"Неверный пароль {password}"}
             };
         //Check it later
-        //await _signInManager.SignInAsync(identityUser, false);
+        await _signInManager.SignInAsync(identityUser, false);
         var claims = new[]
         {
             new Claim("Email", email),
