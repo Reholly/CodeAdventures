@@ -28,7 +28,7 @@
     private string _errorMessage = "";
     private async Task Submit()
     {
-        var request = new LogInRequest() { LoginModel = _loginDto };
+        var request = new LogInRequest { LoginModel = _loginDto };
         var response = await AuthControllerClient.LogIn(request);
         if (response.IsSucceeded)
         {
