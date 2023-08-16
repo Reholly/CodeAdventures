@@ -13,33 +13,39 @@ public class ArticleService : IArticleService
         _config = config;
     }
     
-    public async Task<ICollection<Article>> GetArticles(int page)
+    public async Task<ICollection<Article>> GetArticlesAtPage(int page)
     {
         var articles = await _articlesRepository.GetTableAsync();
-        var pageArticlesCount = int.Parse(_config.GetValue<string>("articleOnPages") ?? throw new InvalidOperationException());
-        return articles
-            .Skip(page * pageArticlesCount)
-            .Take(articles.Count - page * pageArticlesCount)
+        var pageArticlesCount = int.Parse(_config.GetValue<string>("articlesOnPages")
+                                          ?? throw new InvalidOperationException());
+
+        return articles 
+            .Skip((page - 1) * pageArticlesCount)
+            .Take(pageArticlesCount)
             .ToArray();
     }
-
-    public Task<Article> GetArticle(int id)
+    
+    public async Task<Article> EditArticle(int id, string title, string text, string description)
     {
-        throw new NotImplementedException();
-    }
+        var articles = await GetArticles();
+        var currentArticle = articles.FirstOrDefault(art => art.Id == id) 
+                             ?? throw new NullReferenceException();
 
-    public Task<Article> CreateArticle(Article article)
-    {
-        throw new NotImplementedException();
-    }
+        currentArticle.Title = title;
+        currentArticle.Text = text;
+        currentArticle.Description = description;
 
-    public Task<Article> EditArticle(Article article)
-    {
-        throw new NotImplementedException();
-    }
+        await _articlesRepository.UpdateAsync(currentArticle);
 
-    public Task DeleteArticle(Article article)
-    {
-        throw new NotImplementedException();
+        return currentArticle;
     }
+    
+    public async Task<ICollection<Article>> GetArticles() 
+        => await _articlesRepository.GetTableAsync();
+    
+    public async Task CreateArticle(Article article) 
+        => await _articlesRepository.AddAsync(article);
+
+    public async Task DeleteArticle(Article article) 
+        => await _articlesRepository.RemoveAsync(article);
 }

@@ -45,10 +45,9 @@ public class IdentityAuthService : IAuthService
             return new LogInResponse
             {
                 IsSucceeded = false,
-                Errors = new []{ $"Неверный пароль {password}"}
+                Errors = new []{ $"Неверный пароль."}
             };
-        //Check it later
-        await _signInManager.SignInAsync(identityUser, false);
+        
         var claims = new[]
         {
             new Claim("Email", email),
@@ -88,8 +87,14 @@ public class IdentityAuthService : IAuthService
             UserName = user.Username,
             Email = user.Email
         };
-        await _userService.CreateUserAsync(user);
-        return await _userManager.CreateAsync(identityUser, password);
+        var userFromDb = await _userService.FindByEmail(user.Email);
+        if (userFromDb is null)
+        {
+            await _userService.CreateUserAsync(user);
+            return await _userManager.CreateAsync(identityUser, password);
+        }
+        
+        throw new InvalidOperationException("Пользователь уже существует");
     }
 
     public async Task LogOutAsync() => await _signInManager.SignOutAsync();
