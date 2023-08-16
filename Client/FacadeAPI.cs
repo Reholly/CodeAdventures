@@ -1,4 +1,6 @@
+using Blazored.LocalStorage;
 using Client.ControllerClients;
+using Microsoft.AspNetCore.Components.Authorization;
 using Shared.DTO;
 using Shared.Requests.Articles;
 using Shared.Requests.Auth;
@@ -10,17 +12,23 @@ public class FacadeApi
 {
     private readonly IArticlesControllerClient _articlesControllerClient;
     private readonly IAuthControllerClient _authControllerClient;
+    private readonly ILocalStorageService _localStorage;
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
 
     public FacadeApi(
         IArticlesControllerClient articlesControllerClient, 
-        IAuthControllerClient authControllerClient
+        IAuthControllerClient authControllerClient, 
+        ILocalStorageService localStorage, 
+        AuthenticationStateProvider authenticationStateProvider
         )
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
+        _localStorage = localStorage;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
-    public async Task<ICollection<ArticleModel>> GetArticles(GetArticlesRequest request)
+    public async Task<List<ArticleModel>> GetArticles(GetArticlesRequest request)
     {
         try
         {
@@ -30,7 +38,7 @@ public class FacadeApi
                 throw new Exception();
             }
 
-            return response.Articles;
+            return response.Articles.ToList();
         }
         catch (Exception e)
         {
@@ -58,6 +66,15 @@ public class FacadeApi
         try
         {
             var response = await _authControllerClient.LogIn(request);
+            if (!response.IsSucceeded)
+            {
+                return response;
+            }
+
+            await _localStorage.SetItemAsync("token", response.Token.Token);
+            await _localStorage.SetItemAsync("expiry", response.Token.ExpireTime);
+            await _authenticationStateProvider.GetAuthenticationStateAsync();
+
             return response;
         }
         catch (Exception e)
@@ -72,6 +89,10 @@ public class FacadeApi
         try
         {
             await _authControllerClient.LogOut(request);
+            
+            await _localStorage.RemoveItemAsync("token");
+            await _localStorage.RemoveItemAsync("expiry");
+            await _authenticationStateProvider.GetAuthenticationStateAsync();
         }
         catch (Exception e)
         {
