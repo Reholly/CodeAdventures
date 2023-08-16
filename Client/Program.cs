@@ -20,6 +20,7 @@ internal class Program
         builder.Services.AddBlazoredLocalStorage();
         
         builder.Services.AddTransient<AuthHeaderHandler>();
+        builder.Services.AddTransient<FacadeApi>();
 
         builder.Services.AddRefitClient<IArticlesControllerClient>()
             .ConfigureHttpClient(config 
