@@ -1,28 +1,40 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-1">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Client</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="navbar-brand" href="">CodeAdventures</a>
+        <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+            <ul class="navbar-nav me-auto mb-6  mb-md-0">
+                <li class="nav-item">
+                    <NavMenuItem Item="home"/>
+                </li>
+                <li class="nav-item">
+                    <NavMenuItem Item="articles"/>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav ms-auto mb-6  mb-md-0">
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavMenuItem Item="profile"/>
+                        </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="logout"/>
+                        </li>
+                    </Authorized>
+                    
+                    <NotAuthorized>
+                    <li class="nav-item">
+                        <NavMenuItem Item="register"/>
+                    </li>
+                    <li class="nav-item">
+                        <NavMenuItem Item="login"/>
+                    </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
     </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <NavMenuItem Item="home"/>
-        <NavMenuItem Item="articles"/>
-        <AuthorizeView>
-            <Authorized>
-                <NavMenuItem Item="profile"/>
-                <NavMenuItem Item="logout"/>
-            </Authorized>
-            <NotAuthorized>
-                <NavMenuItem Item="register"/>
-                <NavMenuItem Item="login"/>
-            </NotAuthorized>
-        </AuthorizeView>
-    </nav>
-</div>
+</nav>
 
 @code {
     private bool _collapseNavMenu = true;
