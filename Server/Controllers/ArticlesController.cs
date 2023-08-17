@@ -1,6 +1,7 @@
  using MediatR;
  using Microsoft.AspNetCore.Authorization;
  using Microsoft.AspNetCore.Mvc;
+ using Shared.DTO;
  using Shared.Requests.Articles;
  using Shared.Responses.Articles;
 
@@ -12,34 +13,37 @@ public class ArticlesController : Controller
     private readonly IMediator _mediator;
 
     public ArticlesController(IMediator mediator) => _mediator = mediator;
-        
-    [Authorize(Roles = "Student")]
+    
+    [AllowAnonymous]
     [HttpGet]
-    public async Task<GetArticlesResponse> GetArticles(
+    public Task<GetArticlesResponse> GetArticles(
         [FromQuery] GetArticlesRequest request)
-        => await _mediator.Send(request);
-    /*
+        => _mediator.Send(request);
+
+    [AllowAnonymous]
     [HttpGet("/articles/{id}")]
-    Task<ArticleModel> GetArticle(int id)
-    {
-        
-    }
-
+    public Task<GetArticleResponse> GetArticle(
+        [FromBody, FromRoute] GetArticleRequest request)
+        => _mediator.Send(request);
+    
+    [Authorize(Roles = "Student")]
     [HttpPost("/articles/create")]
-    Task CreateArticle(ArticleModel articleModel)
+    public Task CreateArticle(ArticleModel articleModel)
     {
         
     }
 
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPut("/articles/edit/{id}")]
-    Task<ArticleModel> EditArticle(int id)
+    public Task<ArticleModel> EditArticle(int id)
     {
         
     }
 
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpDelete("/articles/delete/{id}")]
-    Task DeleteArticle(int id)
+    public Task DeleteArticle(int id)
     {
         
-    }*/
+    }
 }

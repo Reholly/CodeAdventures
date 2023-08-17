@@ -17,6 +17,13 @@ public interface IArticleService
    /// </summary>
    /// <returns></returns>
    Task<ICollection<Article>> GetArticles();
+
+   /// <summary>
+   /// Returns an article with given id, if it exists
+   /// </summary>
+   /// <param name="id"></param>
+   /// <returns></returns>
+   Task<Article?> GetArticle(int id);
    
    /// <summary>
    /// Returns changed article and can throw NulLReferenceException if article does not exist
