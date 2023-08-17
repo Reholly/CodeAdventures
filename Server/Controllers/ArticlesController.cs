@@ -1,4 +1,5 @@
  using MediatR;
+ using Microsoft.AspNetCore.Authentication;
  using Microsoft.AspNetCore.Authorization;
  using Microsoft.AspNetCore.Mvc;
  using Shared.DTO;
@@ -34,14 +35,13 @@ public class ArticlesController : Controller
 
     [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPut("/articles/edit/{id}")]
-    public Task<ArticleModel> EditArticle(int id)
-    {
-        
-    }
+    public Task<EditArticleResponse> EditArticle(
+        [FromBody] EditArticleRequest request)
+        => _mediator.Send(request with { Token = Request.Headers.Authorization });
 
     [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpDelete("/articles/delete/{id}")]
-    public Task DeleteArticle(int id)
+    public Task DeleteArticle()
     {
         
     }

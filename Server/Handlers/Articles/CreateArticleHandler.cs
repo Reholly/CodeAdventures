@@ -33,7 +33,7 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
             {
                 Author = (await _userService.FindById(request.AuthorId))!,
                 Description = request.Description,
-                EditDate = DateTime.Now,
+                EditDate = request.CreatingTime,
                 PublicationDate = DateTime.Now,
                 Title = request.Title,
                 Text = request.Text

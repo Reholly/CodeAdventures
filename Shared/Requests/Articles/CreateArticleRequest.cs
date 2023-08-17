@@ -9,4 +9,5 @@ public class CreateArticleRequest : IRequest<CreateArticleResponse>
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string Text { get; set; } = null!;
+    public DateTime CreatingTime { get; init; }
 }
