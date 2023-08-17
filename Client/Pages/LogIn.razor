@@ -20,31 +20,27 @@
     </p>
 
     <button type="submit">Войти</button>
-    <span>@_errorMessage</span>
+    @if (_errorMessage.Length > 0)
+    {
+        <span>@_errorMessage</span>
+    }
 </EditForm>
 </div>
 @code {
-    private LoginModel _loginDto = new();
+    private readonly LoginModel _loginDto = new();
     private string _errorMessage = "";
+    
     private async Task Submit()
     {
-        var request = new LogInRequest { LoginModel = _loginDto };
-        var response = await AuthControllerClient.LogIn(request);
+        var response = await Facade.LogInUser(new LogInRequest { LoginModel = _loginDto });
+        _errorMessage = "";
+        foreach (var error in response.Errors)
+        {
+            _errorMessage += error;
+        }
         if (response.IsSucceeded)
         {
-            await LocalStorage.SetItemAsync("token", response.Token.Token);
-            await LocalStorage.SetItemAsync("expiry", response.Token.ExpireTime);
-            await AuthStateProvider.GetAuthenticationStateAsync();
-            
             Navigation.NavigateTo("/");
-        }
-        else
-        {
-            _errorMessage = "";
-            foreach (var error in response.Errors)
-            {
-                _errorMessage += error;
-            }
         }
     }
 }

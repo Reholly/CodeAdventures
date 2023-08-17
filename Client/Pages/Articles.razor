@@ -1,8 +1,6 @@
 @page "/articles"
 @using global::Shared.DTO
 @using global::Shared.Requests.Articles
-@using Refit
-@inject IArticlesControllerClient ArticlesControllerClient
 
 
 <h1>Cascade Auth State</h1>
@@ -16,12 +14,10 @@
 }
 
 @code {
-    private List<ArticleModel> _articles = new List<ArticleModel>();
+    private List<ArticleModel> _articles = new();
 
     protected override async Task OnInitializedAsync()
     {
-        
-        var response = await ArticlesControllerClient.GetArticles(new GetArticlesRequest());
-        _articles = response.Articles.ToList();
+        _articles = await Facade.GetArticles(new GetArticlesRequest());
     }
 }

@@ -32,24 +32,29 @@
         </p>
 
         <button type="submit">Зарегистрироваться</button>
+        @if (_errorMessage.Length > 0)
+        {
+            <span>@_errorMessage</span>
+        }
     </EditForm>
 </div>
 @code {
-    private RegisterModel _registerDto = new RegisterModel();
+    private string _errorMessage = "";
+    private RegisterModel _registerDto = new();
 
     private async Task Submit()
     {
-        var request = new CreateUserRequest { RegisterModel = _registerDto };
-        Console.WriteLine(request.RegisterModel.Username);
-        var response = await AuthControllerClient.RegisterUser(request);
-        Console.WriteLine(response.IsSucceeded);
-        
-        foreach (var i in response.Errors)
+        var response = await Facade.CreateUser(new CreateUserRequest { RegisterModel = _registerDto });
+
+        _errorMessage = "";
+        foreach (var error in response.Errors)
         {
-            Console.WriteLine(i.ToString());
+            _errorMessage += error;
         }
-        
+
         if (response.IsSucceeded)
+        {
             NavigationManager.NavigateTo("/auth/login");
+        }
     }
 }
