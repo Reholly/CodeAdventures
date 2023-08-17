@@ -25,13 +25,12 @@ public class ArticlesController : Controller
     public Task<GetArticleResponse> GetArticle(
         [FromBody, FromRoute] GetArticleRequest request)
         => _mediator.Send(request);
-    
-    [Authorize(Roles = "Student")]
+
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPost("/articles/create")]
-    public Task CreateArticle(ArticleModel articleModel)
-    {
-        
-    }
+    public Task<CreateArticleResponse> CreateArticle(
+        [FromBody] CreateArticleRequest request) 
+        => _mediator.Send(request);
 
     [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPut("/articles/edit/{id}")]

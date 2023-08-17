@@ -1,5 +1,4 @@
 using MediatR;
-using Shared.Responses;
 using Shared.Responses.Articles;
 
 namespace Shared.Requests.Articles;
