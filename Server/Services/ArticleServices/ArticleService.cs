@@ -24,7 +24,10 @@ public class ArticleService : IArticleService
             .Take(pageArticlesCount)
             .ToArray();
     }
-    
+
+    public async Task<Article?> GetArticle(int id)
+        => await _articlesRepository.GetAsync(id);
+
     public async Task<Article> EditArticle(int id, string title, string text, string description)
     {
         var articles = await GetArticles();

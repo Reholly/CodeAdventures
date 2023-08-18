@@ -13,34 +13,34 @@ public class ArticlesController : Controller
     private readonly IMediator _mediator;
 
     public ArticlesController(IMediator mediator) => _mediator = mediator;
-        
+
     [AllowAnonymous]
     [HttpGet]
     public Task<GetArticlesResponse> GetArticles(
-        [FromBody] GetArticlesRequest request)
+        [FromQuery] GetArticlesRequest request)
         => _mediator.Send(request);
-    /*
+
+    [AllowAnonymous]
     [HttpGet("/articles/{id}")]
-    Task<ArticleModel> GetArticle(int id)
-    {
-        
-    }
+    public Task<GetArticleResponse> GetArticle(
+        [FromBody, FromRoute] GetArticleRequest request)
+        => _mediator.Send(request);
 
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPost("/articles/create")]
-    Task CreateArticle(ArticleModel articleModel)
-    {
-        
-    }
+    public Task<CreateArticleResponse> CreateArticle(
+        [FromBody] CreateArticleRequest request) 
+        => _mediator.Send(request);
 
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPut("/articles/edit/{id}")]
-    Task<ArticleModel> EditArticle(int id)
-    {
-        
-    }
+    public Task<EditArticleResponse> EditArticle(
+        [FromBody] EditArticleRequest request)
+        => _mediator.Send(request with { Token = Request.Headers.Authorization });
 
+    [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpDelete("/articles/delete/{id}")]
-    Task DeleteArticle(int id)
-    {
-        
-    }*/
+    public Task<DeleteArticleResponse> DeleteArticle(
+        [FromRoute, FromQuery] DeleteArticleRequest request)
+        => _mediator.Send(request with { Token = Request.Headers.Authorization });
 }

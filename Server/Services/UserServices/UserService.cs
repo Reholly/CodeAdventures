@@ -31,7 +31,11 @@ public class UserService : IUserService
         var users = await _usersDb.GetTableAsync();
         return users.FirstOrDefault(u => u.Email == email);
     }
+
+    public async Task<User?> FindById(int id)
+        => await _usersDb.GetAsync(id);
     
+
     public async Task<User> EditUserAsync(string username, string email, string name, string surname, string patronymic)
     {
         var user = await FindByEmail(email) 
