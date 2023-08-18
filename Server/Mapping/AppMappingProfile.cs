@@ -15,5 +15,7 @@ public class AppMappingProfile : Profile
         CreateMap<UserModel, User>();
         CreateMap<RegisterModel, User>();
         CreateMap<LoginModel, User>();
+        CreateMap<Tiding, TidingModel>();
+        CreateMap<TidingModel, Tiding>();
     }
 }

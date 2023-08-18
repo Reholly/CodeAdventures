@@ -10,6 +10,8 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<Test> Tests => Set<Test>();
     public DbSet<Contest> Contests => Set<Contest>();
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<Tiding> Tidings => Set<Tiding>();
 
     public ApplicationDbContext(DbContextOptions options) : base(options) { }
 

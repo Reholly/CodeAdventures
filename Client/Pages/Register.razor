@@ -40,9 +40,7 @@
     private async Task Submit()
     {
         var request = new CreateUserRequest { RegisterModel = _registerDto };
-        Console.WriteLine(request.RegisterModel.Username);
         var response = await AuthControllerClient.RegisterUser(request);
-        Console.WriteLine(response.IsSucceeded);
         
         foreach (var i in response.Errors)
         {
