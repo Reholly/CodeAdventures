@@ -30,7 +30,12 @@ public class EditArticleHandler : IRequestHandler<EditArticleRequest, EditArticl
 
     public async Task<EditArticleResponse> Handle(EditArticleRequest request, CancellationToken cancellationToken)
     {
-        var userPrincipal = await _authService.GetCurrentUserFromToken(request.Token!);
+        if (request.Token is null)
+        {
+            throw new Exception();
+        }
+
+        var userPrincipal = await _authService.GetCurrentUserFromToken(request.Token);
         var userEmail = userPrincipal.FindFirst("email")!.Value;
         var user = await _userService.FindByEmail(userEmail);
         
