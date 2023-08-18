@@ -1,18 +1,19 @@
- using MediatR;
+using MediatR;
  using Microsoft.AspNetCore.Authorization;
  using Microsoft.AspNetCore.Mvc;
  using Shared.Requests.Articles;
  using Shared.Responses.Articles;
 
- namespace Server.Controllers;
- [ApiController]
- [Route("/api/[controller]")]
+namespace Server.Controllers;
+ 
+[ApiController]
+[Route("/api/[controller]")]
 public class ArticlesController : Controller
 {
     private readonly IMediator _mediator;
 
     public ArticlesController(IMediator mediator) => _mediator = mediator;
-    
+
     [AllowAnonymous]
     [HttpGet]
     public Task<GetArticlesResponse> GetArticles(
