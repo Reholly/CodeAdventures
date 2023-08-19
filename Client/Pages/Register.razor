@@ -1,11 +1,15 @@
 @page "/auth/register"
 @using global::Shared.DTO
 @using global::Shared.Requests.Auth
+@using Client.Components
+@using System.Net
+@using global::Shared.Responses.Auth
+@using Refit
 @inject NavigationManager NavigationManager
 <h3>Register</h3>
 <div>
     <EditForm Model="@_registerModel" OnSubmit="Submit">
-         <p>
+        <p>
             Псеводним:<br/>
             <InputText @bind-Value="_registerModel.Username"/>
         </p>

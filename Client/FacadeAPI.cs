@@ -83,7 +83,7 @@ public class FacadeApi
         try
         {
             var response = await _articlesControllerClient.DeleteArticle(request);
-            return response;
+            return response.Content!;
         }
         catch (ApiException e)
         {
