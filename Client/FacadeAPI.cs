@@ -109,7 +109,6 @@ public class FacadeApi
         await _authenticationStateProvider.GetAuthenticationStateAsync();
             
         return (response.Content, null);
-
     }
 
     public async Task<ApiException?> LogOutUser(LogOutRequest request)

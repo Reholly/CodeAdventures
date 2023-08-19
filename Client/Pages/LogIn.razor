@@ -1,7 +1,9 @@
 @page "/auth/login"
 @using global::Shared.DTO
 @using global::Shared.Requests.Auth
+@using Client.Services
 @inject NavigationManager Navigation
+@inject ToastService ToastService
 <h3>LogIn</h3>
 
 <div>
@@ -29,6 +31,7 @@
         var (_, error) = await Facade.LogInUser(request);
         if (error is null)
         {
+            ToastService.ShowToast("You've been logged in", ToastLevel.Success);
             Navigation.NavigateTo("/");
         }
         else
