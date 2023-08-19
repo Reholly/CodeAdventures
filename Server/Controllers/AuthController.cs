@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Requests.Auth;
 using Shared.Responses.Auth;
@@ -13,18 +14,20 @@ public class AuthController : Controller
 
     public AuthController(IMediator mediator) => _mediator = mediator;
     
+    [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<LogInResponse> LogIn(
-        [FromBody] LogInRequest request) =>
-        await _mediator.Send(request);
+    public Task<LogInResponse> LogIn(
+        [FromBody] LogInRequest request) 
+        => _mediator.Send(request);
 
     [HttpPost("logout")]
-    public async Task<LogOutResponse> LogOut(
+    public Task<LogOutResponse> LogOut(
         [FromBody] LogOutRequest request)
-        => await _mediator.Send(request);
+        => _mediator.Send(request);
 
+    [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<CreateUserResponse> Register(
+    public Task<CreateUserResponse> Register(
         [FromBody] CreateUserRequest request) 
-        => await _mediator.Send(request);
+        => _mediator.Send(request);
 }

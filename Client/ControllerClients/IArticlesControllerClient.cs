@@ -1,5 +1,4 @@
 using Refit;
-using Shared.DTO;
 using Shared.Requests.Articles;
 using Shared.Responses.Articles;
 
@@ -8,17 +7,17 @@ namespace Client.ControllerClients;
 public interface IArticlesControllerClient
 {
     [Get("/articles")]
-    Task<GetArticlesResponse> GetArticles(GetArticlesRequest request);
+    Task<ApiResponse<GetArticlesResponse>> GetArticles(GetArticlesRequest request);
 
-    [Get("/articles/{id}")]
-    Task<ArticleModel> GetArticle(int id);
+    [Get("/articles/{request.Id}")]
+    Task<ApiResponse<GetArticleResponse>> GetArticle(GetArticleRequest request);
 
     [Post("/articles/create")]
-    Task CreateArticle([Body] ArticleModel articleModel);
+    Task<ApiResponse<CreateArticleResponse>> CreateArticle(CreateArticleRequest request);
 
-    [Put("/articles/edit/{id}")]
-    Task<ArticleModel> EditArticle(int id);
+    [Put("/articles/edit/{request.Id}")]
+    Task<ApiResponse<EditArticleResponse>> EditArticle(EditArticleRequest request);
 
-    [Delete("/articles/delete/{id}")]
-    Task DeleteArticle(int id);
+    [Delete("/articles/delete/{request.Id}")]
+    Task<ApiResponse<DeleteArticleResponse>> DeleteArticle(DeleteArticleRequest request);
 }

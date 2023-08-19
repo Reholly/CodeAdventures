@@ -26,6 +26,9 @@
 
     <ItemGroup>
       <Folder Include="Handlers\Users\" />
+      <Folder Include="Services\CourseServices\" />
+      <Folder Include="Services\EducationServices\" />
+      <Folder Include="Services\SandboxServices\" />
     </ItemGroup>
 
 </Project>

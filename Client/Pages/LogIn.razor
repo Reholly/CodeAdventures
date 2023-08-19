@@ -1,22 +1,18 @@
 @page "/auth/login"
 @using global::Shared.DTO
 @using global::Shared.Requests.Auth
-@using Blazored.LocalStorage
-@inject IAuthControllerClient AuthControllerClient
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
-@inject ILocalStorageService LocalStorage
 <h3>LogIn</h3>
 
 <div>
-<EditForm Model="@_loginDto" OnSubmit="Submit">
+<EditForm Model="@_loginModel" OnSubmit="Submit">
     <p>
         Почта :<br/>
-        <InputText type="email" @bind-Value="_loginDto.Email"/>
+        <InputText type="email" @bind-Value="_loginModel.Email"/>
     </p>
     <p>
         Пароль:<br/>
-        <InputText type="password" @bind-Value="_loginDto.Password"/>
+        <InputText type="password" @bind-Value="_loginModel.Password"/>
     </p>
 
     <button type="submit">Войти</button>
@@ -24,27 +20,20 @@
 </EditForm>
 </div>
 @code {
-    private LoginModel _loginDto = new();
+    private readonly LoginModel _loginModel = new();
     private string _errorMessage = "";
+    
     private async Task Submit()
     {
-        var request = new LogInRequest() { LoginModel = _loginDto };
-        var response = await AuthControllerClient.LogIn(request);
-        if (response.IsSucceeded)
+        var request = new LogInRequest { LoginModel = _loginModel };
+        var (_, error) = await Facade.LogInUser(request);
+        if (error is null)
         {
-            await LocalStorage.SetItemAsync("token", response.Token.Token);
-            await LocalStorage.SetItemAsync("expiry", response.Token.ExpireTime);
-            await AuthStateProvider.GetAuthenticationStateAsync();
-            
             Navigation.NavigateTo("/");
         }
         else
         {
-            _errorMessage = "";
-            foreach (var error in response.Errors)
-            {
-                _errorMessage += error;
-            }
+            _errorMessage = error.Message;
         }
     }
 }

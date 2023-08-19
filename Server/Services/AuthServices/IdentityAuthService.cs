@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -45,10 +46,9 @@ public class IdentityAuthService : IAuthService
             return new LogInResponse
             {
                 IsSucceeded = false,
-                Errors = new []{ $"Неверный пароль {password}"}
+                Errors = new []{ $"Неверный пароль."}
             };
-        //Check it later
-        await _signInManager.SignInAsync(identityUser, false);
+        
         var claims = new[]
         {
             new Claim("Email", email),
@@ -88,9 +88,47 @@ public class IdentityAuthService : IAuthService
             UserName = user.Username,
             Email = user.Email
         };
-        await _userService.CreateUserAsync(user);
-        return await _userManager.CreateAsync(identityUser, password);
+        var userFromDb = await _userService.FindByEmail(user.Email);
+        if (userFromDb is null)
+        {
+            await _userService.CreateUserAsync(user);
+            return await _userManager.CreateAsync(identityUser, password);
+        }
+        
+        throw new InvalidOperationException("Пользователь уже существует");
     }
 
     public async Task LogOutAsync() => await _signInManager.SignOutAsync();
+
+    public async Task<ClaimsPrincipal> GetCurrentUserFromToken(string token)
+    {
+        var identity = new ClaimsIdentity();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+        }
+
+        var user = new ClaimsPrincipal(identity);
+
+        return user;
+    }
+    
+    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    {
+        var payload = jwt.Split('.')[1];
+        var jsonBytes = ParseBase64WithoutPadding(payload);
+        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+    }
+    
+    private byte[] ParseBase64WithoutPadding(string base64)
+    {
+        switch (base64.Length % 4)
+        {
+            case 2: base64 += "=="; break;
+            case 3: base64 += "="; break;
+        }
+        return Convert.FromBase64String(base64);
+    }
 }

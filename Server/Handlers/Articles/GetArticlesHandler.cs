@@ -20,7 +20,7 @@ public class GetArticlesHandler : IRequestHandler<GetArticlesRequest, GetArticle
 
     public async Task<GetArticlesResponse> Handle(GetArticlesRequest request, CancellationToken cancellationToken)
     {
-        var articles = await _articleService.GetArticles(1);//request.Page);
+        var articles = await _articleService.GetArticlesAtPage(1);//request.Page);
         var articleModels = articles.Select(_mapper.Map<ArticleModel>).ToArray();
         
         return new GetArticlesResponse { Articles = articleModels };

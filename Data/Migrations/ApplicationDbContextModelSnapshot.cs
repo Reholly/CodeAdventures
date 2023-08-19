@@ -102,7 +102,7 @@ namespace Data.Migrations
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Data.Entities.Test", b =>
@@ -133,6 +133,30 @@ namespace Data.Migrations
                     b.ToTable("Tests");
                 });
 
+            modelBuilder.Entity("Data.Entities.Tiding", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("PublicationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tidings");
+                });
+
             modelBuilder.Entity("Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -154,10 +178,6 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Surname")
                         .IsRequired()
