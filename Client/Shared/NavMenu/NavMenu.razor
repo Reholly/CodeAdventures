@@ -1,0 +1,66 @@
+﻿<nav class="navbar fixed-top navbar-expand-md navbar-light mb-1"
+      style="background-color:white; font-size: large">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">CodeAdventures</a>
+        <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+            <ul class="navbar-nav nav-pills me-auto mb-6  mb-md-0">
+                <li class="nav-item">
+                    <NavMenuItem Item="home"/>
+                </li>
+                <li class="nav-item">
+                    <NavMenuItem Item="articles"/>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav nav-pills ms-auto mb-6  mb-md-0">
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavMenuItem Item="profile"/>
+                        </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="logout"/>
+                        </li>
+                    </Authorized>
+                    
+                    <NotAuthorized>
+                    <li class="nav-item">
+                        <NavMenuItem Item="register"/>
+                    </li>
+                    <li class="nav-item">
+                        <NavMenuItem Item="login"/>
+                    </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+        color: black;
+        background-color: #F5F5F5;
+        opacity: 0.5;
+    }
+    
+    .navbar-brand{
+    font-size: 25px;
+    margin-bottom: 3px;
+    }
+   
+    .container-fluid{
+        box-shadow: 0 6px 4px -4px rgba(0, 0, 0, .2);
+    }
+</style>
+
+@code {
+    private bool _collapseNavMenu = true;
+   
+    private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        _collapseNavMenu = !_collapseNavMenu;
+    }
+}

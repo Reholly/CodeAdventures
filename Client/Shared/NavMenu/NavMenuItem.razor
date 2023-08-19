@@ -1,0 +1,29 @@
+<NavLink class="nav-link" href="@_hrefs[Item]" Match="NavLinkMatch.All">
+    <span class="oi" aria-hidden="true"></span> @_titles[Item]
+</NavLink>
+
+
+@code {
+    [Parameter]
+    public required string Item { get; set; }
+    
+    private readonly IDictionary<string, string> _titles = new Dictionary<string, string>
+    {
+        { "home", "Главная" },
+        { "articles", "Статьи" },
+        { "profile", "Профиль" },
+        { "logout", "Выйти" },
+        { "register", "Регистрация" },
+        { "login", "Войти" }
+    };
+
+    private readonly IDictionary<string, string> _hrefs = new Dictionary<string, string>
+    {
+        { "home", "" },
+        { "articles", "articles" },
+        { "profile", "users/current" },
+        { "logout", "auth/logout" },
+        { "register", "auth/register" },
+        { "login", "auth/login" }
+    };
+}
