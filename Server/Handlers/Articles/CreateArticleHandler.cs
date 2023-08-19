@@ -40,15 +40,13 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
             };
             await _articleService.CreateArticle(article);
             var articleModel = _mapper.Map<ArticleModel>(article);
-            return new CreateArticleResponse { CreatedArticle = articleModel, IsSucceeded = true };
+            return new CreateArticleResponse { CreatedArticle = articleModel };
         }
         catch (Exception e)
         {
             return new CreateArticleResponse
             {
-                CreatedArticle = null,
-                IsSucceeded = false,
-                Errors = new[] { e.Message }
+                CreatedArticle = null
             };
         }
     }

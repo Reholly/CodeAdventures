@@ -1,7 +1,8 @@
 using MediatR;
  using Microsoft.AspNetCore.Authorization;
  using Microsoft.AspNetCore.Mvc;
- using Shared.Requests.Articles;
+using Refit;
+using Shared.Requests.Articles;
  using Shared.Responses.Articles;
 
 namespace Server.Controllers;
@@ -26,19 +27,19 @@ public class ArticlesController : Controller
         [FromBody, FromRoute] GetArticleRequest request)
         => _mediator.Send(request);
 
-    [Authorize(Roles = "Student, Moderator, Admin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPost("create")]
     public Task<CreateArticleResponse> CreateArticle(
         [FromBody] CreateArticleRequest request) 
         => _mediator.Send(request);
 
-    [Authorize(Roles = "Student, Moderator, Admin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPut("edit/{id}")]
     public Task<EditArticleResponse> EditArticle(
         [FromBody] EditArticleRequest request)
         => _mediator.Send(request with { Token = Request.Headers.Authorization });
 
-    [Authorize(Roles = "Student, Moderator, Admin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
     [HttpDelete("delete/{id}")]
     public Task<DeleteArticleResponse> DeleteArticle(
         [FromRoute, FromQuery] DeleteArticleRequest request)

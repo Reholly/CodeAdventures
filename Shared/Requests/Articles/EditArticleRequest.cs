@@ -7,6 +7,7 @@ namespace Shared.Requests.Articles;
 
 public record EditArticleRequest : IRequest<EditArticleResponse>
 {
+    public required int Id { get; init; }
     public required ArticleModel Article { get; init; }
     public required string Text { get; init; }
     public required string Description { get; init; }

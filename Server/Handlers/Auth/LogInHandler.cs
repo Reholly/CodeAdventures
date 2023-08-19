@@ -37,9 +37,7 @@ public class LogInHandler : IRequestHandler<LogInRequest, LogInResponse>
             {
                 Token = loggedInResponse.Token,
                 ExpireTime = loggedInResponse.TokenExpireDate,
-            },
-            IsSucceeded = loggedInResponse.IsSucceeded,
-            Errors = loggedInResponse.Errors
+            }
         };
     }
 }

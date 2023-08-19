@@ -22,6 +22,6 @@
     {
         
         var response = await ArticlesControllerClient.GetArticles(new GetArticlesRequest());
-        _articles = response.Articles.ToList();
+        _articles = response.Content!.Articles.ToList();
     }
 }

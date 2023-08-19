@@ -45,11 +45,11 @@ public class DeleteArticleHandler : IRequestHandler<DeleteArticleRequest, Delete
 
             var article = await _articleService.GetArticle(request.Article.Id) ?? throw new Exception();
             await _articleService.DeleteArticle(article);
-            return new DeleteArticleResponse { IsSucceeded = true };
+            return new DeleteArticleResponse();
         }
         catch (Exception ex)
         {
-            return new DeleteArticleResponse { IsSucceeded = false, Errors = new List<string> { ex.Message } };
+            return new DeleteArticleResponse();
         }
     }
 }

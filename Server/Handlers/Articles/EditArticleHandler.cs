@@ -54,12 +54,12 @@ public class EditArticleHandler : IRequestHandler<EditArticleRequest, EditArticl
             var article = await _articleService.GetArticle(request.Article.Id);
             var articleModel = _mapper.Map<ArticleModel>(article);
             return new EditArticleResponse
-                { EditedArticle = articleModel, IsSucceeded = true };
+                { EditedArticle = articleModel };
         }
         catch (Exception ex)
         {
             return new EditArticleResponse
-                { EditedArticle = null!, IsSucceeded = false, Errors = new List<string> { ex.Message } };
+                { EditedArticle = null! };
         }
     }
 }
