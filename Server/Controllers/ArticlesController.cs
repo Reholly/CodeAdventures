@@ -21,25 +21,25 @@ public class ArticlesController : Controller
         => _mediator.Send(request);
 
     [AllowAnonymous]
-    [HttpGet("/articles/{id}")]
+    [HttpGet("{id}")]
     public Task<GetArticleResponse> GetArticle(
         [FromBody, FromRoute] GetArticleRequest request)
         => _mediator.Send(request);
 
     [Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpPost("/articles/create")]
+    [HttpPost("create")]
     public Task<CreateArticleResponse> CreateArticle(
         [FromBody] CreateArticleRequest request) 
         => _mediator.Send(request);
 
     [Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpPut("/articles/edit/{id}")]
+    [HttpPut("edit/{id}")]
     public Task<EditArticleResponse> EditArticle(
         [FromBody] EditArticleRequest request)
         => _mediator.Send(request with { Token = Request.Headers.Authorization });
 
     [Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpDelete("/articles/delete/{id}")]
+    [HttpDelete("delete/{id}")]
     public Task<DeleteArticleResponse> DeleteArticle(
         [FromRoute, FromQuery] DeleteArticleRequest request)
         => _mediator.Send(request with { Token = Request.Headers.Authorization });

@@ -1,4 +1,5 @@
 using MediatR;
+using Server.Exceptions;
 using Server.Services.ArticleServices;
 using Server.Services.AuthServices;
 using Server.Services.UserServices;
@@ -25,22 +26,30 @@ public class DeleteArticleHandler : IRequestHandler<DeleteArticleRequest, Delete
 
     public async Task<DeleteArticleResponse> Handle(DeleteArticleRequest request, CancellationToken cancellationToken)
     {
-        if (request.Token is null)
+        try
         {
-            throw new Exception();
-        }
+            if (request.Token is null)
+            {
+                throw new AuthOperationException("JWT token was null");
+            }
 
-        var userPrincipal = await _authService.GetCurrentUserFromToken(request.Token);
-        var userEmail = userPrincipal.FindFirst("email")!.Value;
-        var user = await _userService.FindByEmail(userEmail) ?? throw new Exception();;
-        
-        if (userPrincipal.IsInRole("Student") && request.Article.AuthorId != user.Id)
+            var userPrincipal = await _authService.GetCurrentUserFromToken(request.Token);
+            var userEmail = userPrincipal.FindFirst("email")!.Value;
+            var user = await _userService.FindByEmail(userEmail) ??
+                       throw new ServiceInvalidOperationException("Current user is null (WTF?)");
+            
+            if (userPrincipal.IsInRole("Student") && request.Article.AuthorId != user.Id)
+            {
+                throw new AuthOperationException("You aren't creator of this article");
+            }
+
+            var article = await _articleService.GetArticle(request.Article.Id) ?? throw new Exception();
+            await _articleService.DeleteArticle(article);
+            return new DeleteArticleResponse { IsSucceeded = true };
+        }
+        catch (Exception ex)
         {
-            throw new Exception();
+            return new DeleteArticleResponse { IsSucceeded = false, Errors = new List<string> { ex.Message } };
         }
-
-        var article = await _articleService.GetArticle(request.Article.Id) ?? throw new Exception();
-        await _articleService.DeleteArticle(article);
-        return new DeleteArticleResponse();
     }
 }
