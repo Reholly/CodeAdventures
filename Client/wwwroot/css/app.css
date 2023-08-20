@@ -107,9 +107,9 @@ a, .btn-link {
     z-index: 999;
     position: absolute;
     width: 25rem;
-    top: 2rem;
+    bottom: 5px;
     border-radius: 1rem;
-    right: 2rem;
+    right: 5px;
 }
 
 .cs-toast-icon {
