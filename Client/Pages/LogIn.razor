@@ -1,7 +1,6 @@
 @page "/auth/login"
 @using global::Shared.DTO
 @using global::Shared.Requests.Auth
-@using Client.Services
 @inject NavigationManager Navigation
 @inject ToastService ToastService
 <h3>LogIn</h3>
@@ -18,25 +17,19 @@
     </p>
 
     <button type="submit">Войти</button>
-    <span>@_errorMessage</span>
 </EditForm>
 </div>
 @code {
     private readonly LoginModel _loginModel = new();
-    private string _errorMessage = "";
     
     private async Task Submit()
     {
         var request = new LogInRequest { LoginModel = _loginModel };
-        var (_, error) = await Facade.LogInUser(request);
-        if (error is null)
+        var response= await Facade.LogInUser(request);
+        if (response is not null)
         {
             ToastService.ShowToast("You've been logged in", ToastLevel.Success);
             Navigation.NavigateTo("/");
-        }
-        else
-        {
-            _errorMessage = error.Message;
         }
     }
 }

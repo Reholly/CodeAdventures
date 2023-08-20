@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Client.ControllerClients;
+using Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 using Shared.DTO;
@@ -16,18 +17,20 @@ public class FacadeApi
     private readonly IAuthControllerClient _authControllerClient;
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
+    private readonly ToastService _toastService;
 
     public FacadeApi(
         IArticlesControllerClient articlesControllerClient, 
         IAuthControllerClient authControllerClient, 
         ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider
-        )
+        AuthenticationStateProvider authenticationStateProvider, 
+        ToastService toastService)
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
         _localStorage = localStorage;
         _authenticationStateProvider = authenticationStateProvider;
+        _toastService = toastService;
     }
 
     public async Task<List<ArticleModel>> GetArticles(GetArticlesRequest request)
@@ -96,19 +99,20 @@ public class FacadeApi
         => _authControllerClient.RegisterUser(request);
     
 
-    public async Task<(LogInResponse?, ApiException?)> LogInUser(LogInRequest request)
+    public async Task<LogInResponse?> LogInUser(LogInRequest request)
     {
         var response = await _authControllerClient.LogIn(request);
         if (!response.IsSuccessStatusCode)
         {
-            return (null, response.Error);
+            _toastService.ShowToast($"{response.Error.Message} ({response.StatusCode})", ToastLevel.Error);
+            return null;
         }
 
         await _localStorage.SetItemAsync("token", response.Content.Token.Token);
         await _localStorage.SetItemAsync("expiry", response.Content.Token.ExpireTime);
         await _authenticationStateProvider.GetAuthenticationStateAsync();
             
-        return (response.Content, null);
+        return response.Content;
     }
 
     public async Task<ApiException?> LogOutUser(LogOutRequest request)
