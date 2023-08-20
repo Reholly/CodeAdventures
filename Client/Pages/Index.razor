@@ -7,4 +7,9 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+<button @onclick="() => throw new Exception(TestExceptionText)"></button>
+
+@code
+{
+        private const string TestExceptionText = "skdngskijgisdg";
+}

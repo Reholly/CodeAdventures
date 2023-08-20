@@ -1,6 +1,5 @@
 using Blazored.LocalStorage;
 using Client.ControllerClients;
-using Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 using Shared.DTO;
@@ -17,20 +16,17 @@ public class FacadeApi
     private readonly IAuthControllerClient _authControllerClient;
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
-    private readonly ToastService _toastService;
 
     public FacadeApi(
         IArticlesControllerClient articlesControllerClient, 
         IAuthControllerClient authControllerClient, 
         ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider, 
-        ToastService toastService)
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
         _localStorage = localStorage;
         _authenticationStateProvider = authenticationStateProvider;
-        _toastService = toastService;
     }
 
     public async Task<List<ArticleModel>> GetArticles(GetArticlesRequest request)
@@ -104,8 +100,7 @@ public class FacadeApi
         var response = await _authControllerClient.LogIn(request);
         if (!response.IsSuccessStatusCode)
         {
-            _toastService.ShowToast($"{response.Error.Message} ({response.StatusCode})", ToastLevel.Error);
-            return null;
+            throw response.Error;
         }
 
         await _localStorage.SetItemAsync("token", response.Content.Token.Token);

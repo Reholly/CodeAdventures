@@ -27,7 +27,7 @@
 
     private void ShowToast(string message, ToastLevel level)
     {
-        BuildToastSettings(level, message);
+        BuildToastSettings(message, level);
         _isVisible = true;
         StateHasChanged();
     }
@@ -38,7 +38,7 @@
         StateHasChanged();
     }
 
-    private void BuildToastSettings(ToastLevel level, string message)
+    private void BuildToastSettings(string message, ToastLevel level)
     {
         switch (level)
         {
