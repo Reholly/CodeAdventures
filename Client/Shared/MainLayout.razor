@@ -1,11 +1,26 @@
 ﻿@inherits LayoutComponentBase
 
 <NavMenu />
-<AuthorizedChecker />
+<AuthorizedChecker/>
+<Toast/>
 <div class="page">
     <main>
         <article class="content px-4">
-            @Body
+            <CustomErrorBoundary @ref="_errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+            </CustomErrorBoundary>
         </article>
     </main>
 </div>
+
+@code {
+    private CustomErrorBoundary? _errorBoundary;
+    
+    protected override void OnParametersSet()
+    {
+        _errorBoundary?.Recover();
+    }
+
+}

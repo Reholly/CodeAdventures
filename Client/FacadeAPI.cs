@@ -21,8 +21,7 @@ public class FacadeApi
         IArticlesControllerClient articlesControllerClient, 
         IAuthControllerClient authControllerClient, 
         ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider
-        )
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
@@ -96,20 +95,19 @@ public class FacadeApi
         => _authControllerClient.RegisterUser(request);
     
 
-    public async Task<(LogInResponse?, ApiException?)> LogInUser(LogInRequest request)
+    public async Task<LogInResponse?> LogInUser(LogInRequest request)
     {
         var response = await _authControllerClient.LogIn(request);
         if (!response.IsSuccessStatusCode)
         {
-            return (null, response.Error);
+            throw response.Error;
         }
 
         await _localStorage.SetItemAsync("token", response.Content.Token.Token);
         await _localStorage.SetItemAsync("expiry", response.Content.Token.ExpireTime);
         await _authenticationStateProvider.GetAuthenticationStateAsync();
             
-        return (response.Content, null);
-
+        return response.Content;
     }
 
     public async Task<ApiException?> LogOutUser(LogOutRequest request)
