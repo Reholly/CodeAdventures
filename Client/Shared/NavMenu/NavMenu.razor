@@ -13,6 +13,14 @@
             </ul>
             
             <ul class="navbar-nav nav-pills ms-auto mb-6  mb-md-0">
+                <AuthorizeView Roles="Moderator">
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavMenuItem Item="moderation"/>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+                
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
@@ -22,14 +30,14 @@
                             <NavMenuItem Item="logout"/>
                         </li>
                     </Authorized>
-                    
+
                     <NotAuthorized>
-                    <li class="nav-item">
-                        <NavMenuItem Item="register"/>
-                    </li>
-                    <li class="nav-item">
-                        <NavMenuItem Item="login"/>
-                    </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="register"/>
+                        </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="login"/>
+                        </li>
                     </NotAuthorized>
                 </AuthorizeView>
             </ul>
