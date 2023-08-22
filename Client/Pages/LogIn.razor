@@ -28,7 +28,7 @@
         var response= await Facade.LogInUser(request);
         if (response is not null)
         {
-            ToastService.ShowToast("You've been logged in", ToastLevel.Success);
+            ToastService.ShowToast("You've been logged in", ToastLevel.Info);
             Navigation.NavigateTo("/");
         }
     }

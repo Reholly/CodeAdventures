@@ -91,9 +91,17 @@ public class FacadeApi
         }
     }
 
-    public Task<ApiResponse<CreateUserResponse>> CreateUser(CreateUserRequest request) 
-        => _authControllerClient.RegisterUser(request);
-    
+    public async Task<bool> CreateUser(CreateUserRequest request)
+    {
+        var response = await _authControllerClient.RegisterUser(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.Error;
+        }
+
+        return true;
+    }
+
 
     public async Task<LogInResponse?> LogInUser(LogInRequest request)
     {
@@ -110,18 +118,18 @@ public class FacadeApi
         return response.Content;
     }
 
-    public async Task<ApiException?> LogOutUser(LogOutRequest request)
+    public async Task<bool> LogOutUser(LogOutRequest request)
     {
         var response = await _authControllerClient.LogOut(request);
         if (!response.IsSuccessStatusCode)
         {
-            return response.Error;
+            throw response.Error;
         }
 
         await _localStorage.RemoveItemAsync("token");
         await _localStorage.RemoveItemAsync("expiry");
         await _authenticationStateProvider.GetAuthenticationStateAsync();
 
-        return null;
+        return true;
     }
 }

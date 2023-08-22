@@ -5,13 +5,10 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var error =  await Facade.LogOutUser(new LogOutRequest());
-        if (error is not null)
+        var logOutSuccess = await Facade.LogOutUser(new LogOutRequest());
+        if (logOutSuccess)
         {
-            Console.WriteLine(error);
-        }
-        else
-        {
+            ToastService.ShowToast("You've been logged out.", ToastLevel.Info);
             NavigationManager.NavigateTo("/auth/login");
         }
     }
