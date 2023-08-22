@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Server.Exceptions;
 using Server.Services.AuthServices;
 using Server.Services.UserServices;
 using Shared.DTO;
@@ -26,6 +27,10 @@ public class LogInHandler : IRequestHandler<LogInRequest, LogInResponse>
     {
         var loginModel = request.LoginModel;
         var loggedInResponse = await _authService.LogInUserAsync(loginModel.Email, loginModel.Password);
+        if (loggedInResponse.IsSucceeded == false)
+        {
+            throw new AuthOperationException(loggedInResponse.Errors.ToArray()[0]);
+        }
         var user = await _userService.FindByEmail(loginModel.Email);
 
         var userDto = _mapper.Map<User, UserModel>(user);
@@ -37,9 +42,7 @@ public class LogInHandler : IRequestHandler<LogInRequest, LogInResponse>
             {
                 Token = loggedInResponse.Token,
                 ExpireTime = loggedInResponse.TokenExpireDate,
-            },
-            IsSucceeded = loggedInResponse.IsSucceeded,
-            Errors = loggedInResponse.Errors
+            }
         };
     }
 }

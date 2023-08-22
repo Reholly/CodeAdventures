@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Client.ClientSideAuthProviders;
 using Client.ControllerClients;
 using Client.HttpHandlers;
+using Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -34,6 +35,7 @@ internal class Program
         
         builder.Services.AddOptions();
         builder.Services.AddAuthorizationCore();
+        builder.Services.AddScoped<ToastService>();
         
         await builder.Build().RunAsync();
     }

@@ -1,9 +1,11 @@
 using Blazored.LocalStorage;
 using Client.ControllerClients;
 using Microsoft.AspNetCore.Components.Authorization;
+using Refit;
 using Shared.DTO;
 using Shared.Requests.Articles;
 using Shared.Requests.Auth;
+using Shared.Responses.Articles;
 using Shared.Responses.Auth;
 
 namespace Client;
@@ -19,8 +21,7 @@ public class FacadeApi
         IArticlesControllerClient articlesControllerClient, 
         IAuthControllerClient authControllerClient, 
         ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider
-        )
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
@@ -30,74 +31,105 @@ public class FacadeApi
 
     public async Task<List<ArticleModel>> GetArticles(GetArticlesRequest request)
     {
+        var response = await _articlesControllerClient.GetArticles(request);
+        return response.Content!.Articles.ToList();
+    }
+
+    public async Task<ArticleModel?> GetArticle(GetArticleRequest request)
+    {
         try
         {
-            var response = await _articlesControllerClient.GetArticles(request);
-            if (response.Articles.Count == 0)
-            {
-                throw new Exception();
-            }
-
-            return response.Articles.ToList();
+            var response = await _articlesControllerClient.GetArticle(request);
+            return response.Content?.Article;
         }
-        catch (Exception e)
+        catch (ApiException e)
         {
             Console.WriteLine(e);
             throw;
         }
     }
 
-    public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
+    public async Task<CreateArticleResponse?> CreateArticle(CreateArticleRequest request)
     {
         try
         {
-            var response = await _authControllerClient.RegisterUser(request);
-            return response;
+            var response = await _articlesControllerClient.CreateArticle(request);
+            return response.Content;
         }
-        catch (Exception e)
+        catch (ApiException e)
         {
             Console.WriteLine(e);
             throw;
         }
     }
 
-    public async Task<LogInResponse> LogInUser(LogInRequest request)
+    public async Task<EditArticleResponse?> EditArticle(EditArticleRequest request)
     {
         try
         {
-            var response = await _authControllerClient.LogIn(request);
-            if (!response.IsSucceeded)
-            {
-                return response;
-            }
-
-            await _localStorage.SetItemAsync("token", response.Token.Token);
-            await _localStorage.SetItemAsync("expiry", response.Token.ExpireTime);
-            await _authenticationStateProvider.GetAuthenticationStateAsync();
-
-            return response;
+            var response = await _articlesControllerClient.EditArticle(request);
+            return response.Content;
         }
-        catch (Exception e)
+        catch (ApiException e)
         {
             Console.WriteLine(e);
             throw;
         }
     }
 
-    public async Task LogOutUser(LogOutRequest request)
+    public async Task<DeleteArticleResponse> DeleteArticle(DeleteArticleRequest request)
     {
         try
         {
-            await _authControllerClient.LogOut(request);
+            var response = await _articlesControllerClient.DeleteArticle(request);
+            return response.Content!;
+        }
+        catch (ApiException e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<bool> CreateUser(CreateUserRequest request)
+    {
+        var response = await _authControllerClient.RegisterUser(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.Error;
+        }
+
+        return true;
+    }
+
+
+    public async Task<LogInResponse?> LogInUser(LogInRequest request)
+    {
+        var response = await _authControllerClient.LogIn(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.Error;
+        }
+
+        await _localStorage.SetItemAsync("token", response.Content.Token.Token);
+        await _localStorage.SetItemAsync("expiry", response.Content.Token.ExpireTime);
+        await _authenticationStateProvider.GetAuthenticationStateAsync();
             
-            await _localStorage.RemoveItemAsync("token");
-            await _localStorage.RemoveItemAsync("expiry");
-            await _authenticationStateProvider.GetAuthenticationStateAsync();
-        }
-        catch (Exception e)
+        return response.Content;
+    }
+
+    public async Task<bool> LogOutUser(LogOutRequest request)
+    {
+        var response = await _authControllerClient.LogOut(request);
+        if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine(e);
-            throw;
+            throw response.Error;
         }
+
+        await _localStorage.RemoveItemAsync("token");
+        await _localStorage.RemoveItemAsync("expiry");
+        await _authenticationStateProvider.GetAuthenticationStateAsync();
+
+        return true;
     }
 }

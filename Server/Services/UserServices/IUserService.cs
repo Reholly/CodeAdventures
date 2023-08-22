@@ -17,6 +17,13 @@ public interface IUserService
     /// <param name="email"></param>
     /// <returns></returns>
     Task<User?> FindByEmail(string email);
+
+    /// <summary>
+    /// Returns user with given id, if he exists.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<User?> FindById(int id);
     
     /// <summary>
     /// Edit user by parameters. Throw NullReferenceException if user did not find

@@ -1,34 +1,33 @@
 @page "/auth/register"
 @using global::Shared.DTO
 @using global::Shared.Requests.Auth
-@inject IAuthControllerClient AuthControllerClient
 @inject NavigationManager NavigationManager
 <h3>Register</h3>
 <div>
-    <EditForm Model="@_registerDto" OnSubmit="Submit">
-         <p>
+    <EditForm Model="@_registerModel" OnSubmit="Submit">
+        <p>
             Псеводним:<br/>
-            <InputText @bind-Value="_registerDto.Username"/>
+            <InputText @bind-Value="_registerModel.Username"/>
         </p>
         <p>
             Имя:<br/>
-            <InputText @bind-Value="_registerDto.Name"/>
+            <InputText @bind-Value="_registerModel.Name"/>
         </p>
         <p>
             Фамилия:<br/>
-            <InputText @bind-Value="_registerDto.Surname"/>
+            <InputText @bind-Value="_registerModel.Surname"/>
         </p>
         <p>
             Отчество (если есть):<br/>
-            <InputText @bind-Value="_registerDto.Patronymic"/>
+            <InputText @bind-Value="_registerModel.Patronymic"/>
         </p>
         <p>
             Почта :<br/>
-            <InputText type="email" @bind-Value="_registerDto.Email"/>
+            <InputText type="email" @bind-Value="_registerModel.Email"/>
         </p>
         <p>
             Пароль:<br/>
-            <InputText type="password" @bind-Value="_registerDto.Password"/>
+            <InputText type="password" @bind-Value="_registerModel.Password"/>
         </p>
 
         <button type="submit">Зарегистрироваться</button>
@@ -39,21 +38,16 @@
     </EditForm>
 </div>
 @code {
-    private string _errorMessage = "";
-    private RegisterModel _registerDto = new();
+    private readonly RegisterModel _registerModel = new();
 
     private async Task Submit()
     {
-        var response = await Facade.CreateUser(new CreateUserRequest { RegisterModel = _registerDto });
+        var request = new CreateUserRequest { RegisterModel = _registerModel };
+        var userCreatedSuccessfully = await Facade.CreateUser(request);
 
-        _errorMessage = "";
-        foreach (var error in response.Errors)
+        if (userCreatedSuccessfully)
         {
-            _errorMessage += error;
-        }
-
-        if (response.IsSucceeded)
-        {
+            ToastService.ShowToast("You've been registered.", ToastLevel.Success);
             NavigationManager.NavigateTo("/auth/login");
         }
     }

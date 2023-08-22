@@ -1,14 +1,15 @@
 using System.Text;
 using Data;
-using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Server.Mapping;
+using Server.Middlewares;
 using Server.Services.ArticleServices;
 using Server.Services.AuthServices;
+using Server.Services.TidingServices;
 using Server.Services.UserServices;
 
 namespace Server;
@@ -79,9 +80,12 @@ public class Startup
                 opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
         });
+        services.AddTransient<ErrorHandlingMiddleware>();
+        
         services.AddScoped<IArticleService, ArticleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, IdentityAuthService>();
+        services.AddScoped<ITidingService, TidingService>();
     }
 
     public void Configure(IApplicationBuilder app)
@@ -90,6 +94,7 @@ public class Startup
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<ErrorHandlingMiddleware>();
         app.UseEndpoints(e => e.MapControllers());
     }
 }

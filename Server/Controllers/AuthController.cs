@@ -16,18 +16,18 @@ public class AuthController : Controller
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<LogInResponse> LogIn(
-        [FromBody] LogInRequest request) =>
-        await _mediator.Send(request);
+    public Task<LogInResponse> LogIn(
+        [FromBody] LogInRequest request) 
+        => _mediator.Send(request);
 
     [HttpPost("logout")]
-    public async Task<LogOutResponse> LogOut(
+    public Task<LogOutResponse> LogOut(
         [FromBody] LogOutRequest request)
-        => await _mediator.Send(request);
+        => _mediator.Send(request);
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<CreateUserResponse> Register(
+    public Task<CreateUserResponse> Register(
         [FromBody] CreateUserRequest request) 
-        => await _mediator.Send(request);
+        => _mediator.Send(request);
 }

@@ -32,18 +32,14 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserRe
         
             return new CreateUserResponse
             {
-                UserModel =  userDto, 
-                IsSucceeded = user.Succeeded,
-                Errors = user.Errors.Select(e => e.Description)
+                UserModel =  userDto
             };
         }
         catch (InvalidOperationException exception)
         {
             return new CreateUserResponse
             {
-                UserModel = null,
-                IsSucceeded = false,
-                Errors = new[] { exception.Message }
+                UserModel = null
             };
         }
         

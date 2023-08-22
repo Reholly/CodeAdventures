@@ -1,12 +1,15 @@
 @page "/auth/logout"
 @using global::Shared.Requests.Auth
-@using Blazored.LocalStorage
 @inject NavigationManager NavigationManager
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        await Facade.LogOutUser(new LogOutRequest());
-        NavigationManager.NavigateTo("/auth/login");
+        var logOutSuccess = await Facade.LogOutUser(new LogOutRequest());
+        if (logOutSuccess)
+        {
+            ToastService.ShowToast("You've been logged out.", ToastLevel.Info);
+            NavigationManager.NavigateTo("/auth/login");
+        }
     }
 }

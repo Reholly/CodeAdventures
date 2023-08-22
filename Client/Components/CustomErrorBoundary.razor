@@ -1,0 +1,20 @@
+@inherits ErrorBoundary
+@inject ToastService ToastService
+
+@if (CurrentException is null)
+{
+    @ChildContent
+}
+else
+{
+    @ChildContent
+    ToastService.ShowToast(CurrentException.Message, ToastLevel.Error);
+}
+
+@code {
+    protected override async Task OnErrorAsync(Exception exception)
+    {
+        ToastService.ShowToast(exception.Message, ToastLevel.Error);
+        await base.OnErrorAsync(exception);
+    }
+}
