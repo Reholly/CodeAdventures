@@ -27,27 +27,20 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
     
     public async Task<CreateArticleResponse> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
     {
-        try
+       
+        var article = new Article
         {
-            var article = new Article
-            {
-                Author = (await _userService.FindById(request.AuthorId))!,
-                Description = request.Description,
-                EditDate = request.CreatingTime,
-                PublicationDate = DateTime.Now,
-                Title = request.Title,
-                Text = request.Text
-            };
-            await _articleService.CreateArticle(article);
-            var articleModel = _mapper.Map<ArticleModel>(article);
-            return new CreateArticleResponse { CreatedArticle = articleModel };
-        }
-        catch (Exception e)
-        {
-            return new CreateArticleResponse
-            {
-                CreatedArticle = null
-            };
-        }
+            Author = (await _userService.FindById(request.AuthorId))!,
+            Description = request.Description,
+            EditDate = request.CreatingTime,
+            PublicationDate = DateTime.Now,
+            Title = request.Title,
+            Text = request.Text
+        };
+        
+        await _articleService.CreateArticle(article);
+        var articleModel = _mapper.Map<ArticleModel>(article);
+        
+        return new CreateArticleResponse { CreatedArticle = articleModel };
     }
 }

@@ -2,9 +2,12 @@ using System.Text;
 using Data;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Server.Authorization.AuthorizationHandlers;
+using Server.Authorization.AuthorizationRequirements;
 using Server.Mapping;
 using Server.Middlewares;
 using Server.Services.ArticleServices;
@@ -67,7 +70,11 @@ public class Startup
                     ValidateIssuerSigningKey = true
                 };
             });
-        services.AddAuthorization();
+
+        services.AddTransient<IAuthorizationHandler, AuthorAndPersonnelOnlyHandler>();
+        
+        services.AddAuthorization(opt =>
+            opt.AddPolicy("authorsAndPersonnelOnly", policy => policy.Requirements.Add(new AuthorAndPersonnelOnlyRequirement())));
         services.AddControllers();
         services.AddMediatR(mediatr =>
         {

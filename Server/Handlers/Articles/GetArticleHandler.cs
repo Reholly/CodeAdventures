@@ -22,6 +22,7 @@ public class GetArticleHandler : IRequestHandler<GetArticleRequest, GetArticleRe
     {
         var article = await _articleService.GetArticle(request.Id);
         var articleModel = _mapper.Map<ArticleModel>(article);
+        
         return new GetArticleResponse { Article = articleModel };
     }
 }

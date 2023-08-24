@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Server.Services.AuthServices.AuthResponses;
@@ -32,11 +31,4 @@ public interface IAuthService
     /// </summary>
     /// <returns></returns>
     Task LogOutAsync();
-
-    /// <summary>
-    /// Gets claims principal of current user from JWT token.
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    Task<ClaimsPrincipal> GetCurrentUserFromToken(string token);
 }

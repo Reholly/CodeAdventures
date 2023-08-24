@@ -14,7 +14,7 @@ public class DefaultRepository<TEntity> : IRepository<TEntity>
 
     public async ValueTask<TEntity?> GetAsync(int id) => await _context.Set<TEntity>().FindAsync(id);
 
-    public async Task<ICollection<TEntity>> GetTableAsync() => await _context.Set<TEntity>().ToListAsync();
+    public Task<DbSet<TEntity>> GetTableAsync() => Task.FromResult(_context.Set<TEntity>());
 
     public async Task AddAsync(TEntity entity)
     {

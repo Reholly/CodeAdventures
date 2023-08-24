@@ -1,5 +1,6 @@
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Server.Services.ArticleServices;
 
@@ -26,7 +27,14 @@ public class ArticleService : IArticleService
     }
 
     public async Task<Article?> GetArticle(int id)
-        => await _articlesRepository.GetAsync(id);
+    {
+        var articles = await _articlesRepository.GetTableAsync();
+        
+        return await articles
+            .Include(u => u.Author)
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
+       
 
     public async Task<Article> EditArticle(int id, string title, string text, string description)
     {
@@ -44,7 +52,7 @@ public class ArticleService : IArticleService
     }
     
     public async Task<ICollection<Article>> GetArticles() 
-        => await _articlesRepository.GetTableAsync();
+        => (await _articlesRepository.GetTableAsync()).ToList();
     
     public async Task CreateArticle(Article article) 
         => await _articlesRepository.AddAsync(article);

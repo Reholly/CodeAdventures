@@ -6,7 +6,7 @@
 <div>
     <EditForm Model="@_registerModel" OnSubmit="Submit">
         <p>
-            Псеводним:<br/>
+            Псевдоним:<br/>
             <InputText @bind-Value="_registerModel.Username"/>
         </p>
         <p>
@@ -31,10 +31,7 @@
         </p>
 
         <button type="submit">Зарегистрироваться</button>
-        @if (_errorMessage.Length > 0)
-        {
-            <span>@_errorMessage</span>
-        }
+      
     </EditForm>
 </div>
 @code {
