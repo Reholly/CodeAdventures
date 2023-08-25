@@ -15,7 +15,7 @@ public class TidingService : ITidingService
            ?? throw new ServiceOperationNullException("Похоже, последних новостей нет!");
     
     public async Task<ICollection<Tiding>> GetTidingsAsync()
-        => (await _tidingsDb.GetTableAsync()).ToList();
+        => await _tidingsDb.GetTableAsync();
 
     public async Task<Tiding> UpdateTidingAsync(string title, string text, DateTimeOffset tidingKey)
     {
