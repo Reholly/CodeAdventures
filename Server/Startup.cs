@@ -94,7 +94,6 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, IdentityAuthService>();
         services.AddScoped<ITidingService, TidingService>();
-        services.AddTransient<TokenParseService>();
     }
 
     public void Configure(IApplicationBuilder app)

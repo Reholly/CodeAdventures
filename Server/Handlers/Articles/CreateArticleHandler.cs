@@ -1,8 +1,6 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
-using Server.Exceptions;
-using Server.Services;
 using Server.Services.ArticleServices;
 using Server.Services.UserServices;
 using Shared.DTO;
@@ -15,28 +13,21 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
 {
     private readonly IArticleService _articleService;
     private readonly IUserService _userService;
-    private readonly TokenParseService _tokenParseService;
     private readonly IMapper _mapper;
 
     public CreateArticleHandler(
         IArticleService articleService, 
         IMapper mapper, 
-        IUserService userService, 
-        TokenParseService tokenParseService)
+        IUserService userService)
     {
         _articleService = articleService;
         _mapper = mapper;
         _userService = userService;
-        _tokenParseService = tokenParseService;
     }
     
     public async Task<CreateArticleResponse> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
     {
-        var userClaims = request.Token is not null ? 
-            _tokenParseService.ParseClaimsPrincipalFromJwt(request.Token)
-            : throw new AuthOperationException("JWT Token отсутствует");
-        
-        var user = await _userService.FindByEmail(userClaims.FindFirst("email")!.Value);
+        var user = await _userService.FindByEmail(request.AuthorEmail);
         
         var article = new Article
         {
