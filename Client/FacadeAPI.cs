@@ -63,18 +63,15 @@ public class FacadeApi
         }
     }
 
-    public async Task<EditArticleResponse?> EditArticle(EditArticleRequest request)
+    public async Task<ArticleModel?> EditArticle(EditArticleRequest request)
     {
-        try
+        var response = await _articlesControllerClient.EditArticle(request);
+        if (!response.IsSuccessStatusCode)
         {
-            var response = await _articlesControllerClient.EditArticle(request);
-            return response.Content;
+            throw response.Error;
         }
-        catch (ApiException e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+
+        return response.Content.EditedArticle;
     }
 
     public async Task<DeleteArticleResponse> DeleteArticle(DeleteArticleRequest request)

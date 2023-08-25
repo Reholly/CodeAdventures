@@ -7,5 +7,5 @@ public record UpdateTidingRequest : IRequest<UpdateTidingResponse>
 {
     public required string Title { get; init; }
     public required string Text { get; init; }
-    public required DateTime PublicationDate { get; init; }
+    public required DateTimeOffset PublicationDate { get; init; }
 }

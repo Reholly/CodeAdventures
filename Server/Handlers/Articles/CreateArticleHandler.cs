@@ -2,6 +2,7 @@ using AutoMapper;
 using Data.Entities;
 using MediatR;
 using Server.Services.ArticleServices;
+using Server.Services.AuthServices;
 using Server.Services.UserServices;
 using Shared.DTO;
 using Shared.Requests.Articles;
@@ -13,21 +14,23 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
 {
     private readonly IArticleService _articleService;
     private readonly IUserService _userService;
+    private readonly IAuthService _authService;
     private readonly IMapper _mapper;
 
     public CreateArticleHandler(
         IArticleService articleService, 
         IMapper mapper, 
-        IUserService userService)
+        IUserService userService, 
+        IAuthService authService)
     {
         _articleService = articleService;
         _mapper = mapper;
         _userService = userService;
+        _authService = authService;
     }
     
     public async Task<CreateArticleResponse> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
     {
-       
         var article = new Article
         {
             Author = (await _userService.FindById(request.AuthorId))!,

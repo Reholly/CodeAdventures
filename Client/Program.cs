@@ -26,6 +26,7 @@ internal class Program
             .ConfigureHttpClient(config 
                 => config.BaseAddress = new Uri("http://localhost:5239/api"))
             .AddHttpMessageHandler<AuthHeaderHandler>();
+        
         builder.Services.AddTransient<FacadeApi>();
         
         builder.Services.AddRefitClient<IAuthControllerClient>()

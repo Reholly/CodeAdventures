@@ -5,5 +5,5 @@ namespace Shared.Requests.Index;
 
 public class DeleteTidingRequest : IRequest<DeleteTidingResponse>
 {
-    public required DateTime PublicationDate { get; init; }
+    public required DateTimeOffset PublicationDate { get; init; }
 }
