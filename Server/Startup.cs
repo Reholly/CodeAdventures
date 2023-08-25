@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Server.Authorization.AuthorizationHandlers;
 using Server.Authorization.AuthorizationRequirements;
+using Server.Extensions;
 using Server.Mapping;
 using Server.Middlewares;
 using Server.Services;
@@ -37,7 +38,7 @@ public class Startup
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connStr));
         
-        services.AddScoped(typeof(IRepository<>), typeof(DefaultRepository<>));
+        services.AddRepositories();
         
         services.AddAutoMapper(typeof(AppMappingProfile));
         services.AddDefaultIdentity<IdentityUser>(options =>

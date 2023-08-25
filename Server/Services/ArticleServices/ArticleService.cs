@@ -1,6 +1,5 @@
 using Data.Entities;
 using Data.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Server.Services.ArticleServices;
 
@@ -30,9 +29,7 @@ public class ArticleService : IArticleService
     {
         var articles = await _articlesRepository.GetTableAsync();
         
-        return await articles
-            .Include(u => u.Author)
-            .FirstOrDefaultAsync(u => u.Id == id);
+        return articles.FirstOrDefault(u => u.Id == id);
     }
        
 

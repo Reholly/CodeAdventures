@@ -53,7 +53,7 @@ public class UserService : IUserService
     }
     
     public async Task<ICollection<User>?> GetUsersAsync() 
-        => (await _usersDb.GetTableAsync()).ToList();
+        => await _usersDb.GetTableAsync();
 
     public async Task DeleteUserAsync(User user)
         => await _usersDb.RemoveAsync(user);
