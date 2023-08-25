@@ -7,7 +7,7 @@ public class Article
     public string Title { get; set; } = null!;
     public string Text { get; set; } = null!;
     public string Description { get; set; } = null!;
-    public DateTime PublicationDate { get; set; }
-    public DateTime? EditDate { get; set; }
+    public DateTimeOffset PublicationDate { get; set; }
+    public DateTimeOffset? EditDate { get; set; }
     public int Views { get; set; }
 }

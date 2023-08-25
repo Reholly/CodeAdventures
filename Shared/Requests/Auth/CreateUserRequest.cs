@@ -4,7 +4,7 @@ using Shared.Responses.Auth;
 
 namespace Shared.Requests.Auth;
 
-public class CreateUserRequest : IRequest<CreateUserResponse>
+public record CreateUserRequest : IRequest<CreateUserResponse>
 {
-    public RegisterModel RegisterModel { get; set; }
+    public required RegisterModel RegisterModel { get; init; }
 }

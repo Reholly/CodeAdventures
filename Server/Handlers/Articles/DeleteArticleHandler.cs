@@ -1,4 +1,5 @@
 using MediatR;
+using Server.Exceptions;
 using Server.Services.ArticleServices;
 using Shared.Requests.Articles;
 using Shared.Responses.Articles;
@@ -13,7 +14,8 @@ public class DeleteArticleHandler : IRequestHandler<DeleteArticleRequest, Delete
   
     public async Task<DeleteArticleResponse> Handle(DeleteArticleRequest request, CancellationToken cancellationToken)
     {
-        var article = await _articleService.GetArticle(request.Article.Id) ?? throw new Exception();
+        var article = await _articleService.GetArticle(request.Article.Id) 
+                      ?? throw new ServiceInvalidOperationException("Статьи с таким id не существует");
         await _articleService.DeleteArticle(article);
         
         return new DeleteArticleResponse();

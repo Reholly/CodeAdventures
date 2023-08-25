@@ -10,6 +10,7 @@ using Server.Authorization.AuthorizationHandlers;
 using Server.Authorization.AuthorizationRequirements;
 using Server.Mapping;
 using Server.Middlewares;
+using Server.Services;
 using Server.Services.ArticleServices;
 using Server.Services.AuthServices;
 using Server.Services.TidingServices;
@@ -93,6 +94,7 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, IdentityAuthService>();
         services.AddScoped<ITidingService, TidingService>();
+        services.AddTransient<TokenParseService>();
     }
 
     public void Configure(IApplicationBuilder app)

@@ -39,7 +39,7 @@ public class IndexController : Controller
         => _mediator.Send(request);
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("/updatetiding")]
+    [HttpPut("/updatetiding")]
     public Task<UpdateTidingResponse> UpdateTiding(
         [FromBody] UpdateTidingRequest request)
         => _mediator.Send(request);

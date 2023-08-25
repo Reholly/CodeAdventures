@@ -23,25 +23,14 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserRe
     {
         var model = request.RegisterModel;
         var registeredUser = _mapper.Map<RegisterModel, User>(model);
-
-        try
-        {
-            var user = await _authService.RegisterUserAsync(registeredUser, model.Password);
-            
-            var userDto = _mapper.Map<User, UserModel>(registeredUser);
+    
+        await _authService.RegisterUserAsync(registeredUser, model.Password);
         
-            return new CreateUserResponse
-            {
-                UserModel =  userDto
-            };
-        }
-        catch (InvalidOperationException exception)
+        var userDto = _mapper.Map<User, UserModel>(registeredUser);
+    
+        return new CreateUserResponse
         {
-            return new CreateUserResponse
-            {
-                UserModel = null
-            };
-        }
-        
+            CreatedUser =  userDto
+        };
     }
 }

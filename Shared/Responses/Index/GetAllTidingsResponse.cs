@@ -2,7 +2,7 @@ using Shared.DTO;
 
 namespace Shared.Responses.Index;
 
-public class GetAllTidingsResponse
+public record GetAllTidingsResponse
 {
     public required ICollection<TidingModel> Tidings { get; init; }
 }

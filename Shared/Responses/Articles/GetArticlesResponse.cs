@@ -2,7 +2,7 @@ using Shared.DTO;
 
 namespace Shared.Responses.Articles;
 
-public class GetArticlesResponse
+public record GetArticlesResponse
 {
-    public ICollection<ArticleModel> Articles { get; init; } = null!;
+    public required ICollection<ArticleModel> Articles { get; init; }
 }

@@ -25,7 +25,7 @@ public interface ITidingService
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ServiceOperationNullException"></exception>
-    Task<Tiding> UpdateTidingAsync(string title, string text, DateTime tidingKey);
+    Task<Tiding> UpdateTidingAsync(string title, string text, DateTimeOffset tidingKey);
 
     /// <summary>
     /// Returns tiding with date from parameter. Throws NullReferenceException if it is not exist;
@@ -33,7 +33,7 @@ public interface ITidingService
     /// <param name="publicationDate"></param>
     /// <returns></returns>
     /// <exception cref="ServiceOperationNullException"></exception>
-    Task<Tiding> GetTidingByPublicationDateAsync(DateTime publicationDate);
+    Task<Tiding> GetTidingByPublicationDateAsync(DateTimeOffset publicationDate);
     
     /// <summary>
     /// Creating article and added it in system. 
@@ -41,7 +41,7 @@ public interface ITidingService
     /// <param name="title"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    Task CreateTidingAsync(string title, string text);
+    Task<Tiding> CreateTidingAsync(string title, string text);
     
     /// <summary>
     /// Deleting tiding forever. 

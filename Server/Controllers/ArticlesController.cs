@@ -27,8 +27,8 @@ public class ArticlesController : Controller
     [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPost("create")]
     public Task<CreateArticleResponse> CreateArticle(
-        [FromBody] CreateArticleRequest request) 
-        => _mediator.Send(request);
+        [FromBody] CreateArticleRequest request)
+        => _mediator.Send(request with { Token = Request.Headers.Authorization });
 
     [Authorize(Policy = "authorsAndPersonnelOnly")]
     [HttpPut("edit/{id}")]

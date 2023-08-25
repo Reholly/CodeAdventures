@@ -1,6 +1,4 @@
-using System.Security.Claims;
 using MediatR;
-using Shared.DTO;
 using Shared.Responses.Articles;
 
 namespace Shared.Requests.Articles;

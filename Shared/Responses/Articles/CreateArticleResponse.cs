@@ -3,7 +3,7 @@ using Shared.DTO;
 
 namespace Shared.Responses.Articles;
 
-public class CreateArticleResponse
+public record CreateArticleResponse
 {
-    public required ArticleModel? CreatedArticle { get; init; }
+    public required ArticleModel CreatedArticle { get; init; }
 }

@@ -3,11 +3,11 @@ using Shared.Responses.Articles;
 
 namespace Shared.Requests.Articles;
 
-public class CreateArticleRequest : IRequest<CreateArticleResponse>  
+public record CreateArticleRequest : IRequest<CreateArticleResponse>  
 {
-    public int AuthorId { get; set; }
-    public string Title { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public string Text { get; set; } = null!;
-    public DateTime CreatingTime { get; init; }
+    public required string Title { get; init; } 
+    public required string Description { get; init; } 
+    public required string Text { get; init; }
+    public DateTimeOffset CreatingTime { get; init; }
+    public string? Token { get; init; }
 }
