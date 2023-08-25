@@ -4,5 +4,5 @@ namespace Shared.Responses.Articles;
 
 public class GetArticlesResponse
 {
-    public ICollection<ArticleModel> Articles { get; init; } = null!;
+    public required ICollection<ArticleModel> Articles { get; init; }
 }

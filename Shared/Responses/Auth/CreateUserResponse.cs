@@ -5,5 +5,5 @@ namespace Shared.Responses.Auth;
 
 public record CreateUserResponse
 {
-    public required UserModel? UserModel { get; init; }
+    public required UserModel CreatedUser { get; init; }
 }

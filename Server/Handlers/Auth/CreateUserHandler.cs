@@ -32,14 +32,14 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserRe
         
             return new CreateUserResponse
             {
-                UserModel =  userDto
+                CreatedUser =  userDto
             };
         }
         catch (InvalidOperationException exception)
         {
             return new CreateUserResponse
             {
-                UserModel = null
+                CreatedUser = null
             };
         }
         

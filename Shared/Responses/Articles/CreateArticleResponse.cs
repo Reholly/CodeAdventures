@@ -5,5 +5,5 @@ namespace Shared.Responses.Articles;
 
 public class CreateArticleResponse
 {
-    public required ArticleModel? CreatedArticle { get; init; }
+    public required ArticleModel CreatedArticle { get; init; }
 }
