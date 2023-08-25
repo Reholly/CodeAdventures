@@ -22,10 +22,10 @@ public class GetAllTidingsHandler : IRequestHandler<GetAllTidingsRequest, GetAll
     public async Task<GetAllTidingsResponse> Handle(GetAllTidingsRequest request, CancellationToken cancellationToken)
     {
         var tidings = await _tidingService.GetTidingsAsync();
-        var tidingsDtos = tidings
+        var tidingsModels = tidings
             .Select(x => _mapper.Map<Tiding, TidingModel>(x))
             .ToArray();
 
-        return new GetAllTidingsResponse { Tidings = tidingsDtos };
+        return new GetAllTidingsResponse { Tidings = tidingsModels };
     }
 }
