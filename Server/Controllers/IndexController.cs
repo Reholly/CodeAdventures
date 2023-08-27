@@ -15,31 +15,31 @@ public class IndexController : Controller
     public IndexController(IMediator mediator) => _mediator = mediator;
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("/create")]
+    [HttpPost]
     public Task<CreateTidingResponse> CreateTiding(
         [FromBody] CreateTidingRequest request) 
         => _mediator.Send(request);
 
     [Authorize(Roles = "Admin")]
-    [HttpDelete("/delete")]
+    [HttpDelete]
     public Task<DeleteTidingResponse> DeleteTiding(
         [FromBody] DeleteTidingRequest request)
         => _mediator.Send(request);
     
     [AllowAnonymous]
-    [HttpGet("/getall")]
+    [HttpGet]
     public Task<GetAllTidingsResponse> GetAllTidings(
         [FromBody] GetAllTidingsRequest request)
         => _mediator.Send(request);
     
     [AllowAnonymous]
-    [HttpGet("/getlast")]
+    [HttpGet("/last")]
     public Task<GetLastTidingResponse> GetLastTiding(
         [FromBody] GetLastTidingRequest request)
         => _mediator.Send(request);
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("/updatetiding")]
+    [HttpPut]
     public Task<UpdateTidingResponse> UpdateTiding(
         [FromBody] UpdateTidingRequest request)
         => _mediator.Send(request);

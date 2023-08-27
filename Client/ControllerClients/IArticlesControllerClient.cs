@@ -12,12 +12,12 @@ public interface IArticlesControllerClient
     [Get("/articles/{request.Id}")]
     Task<ApiResponse<GetArticleResponse>> GetArticle(GetArticleRequest request);
 
-    [Post("/articles/create")]
+    [Post("/articles")]
     Task<ApiResponse<CreateArticleResponse>> CreateArticle(CreateArticleRequest request);
 
-    [Put("/articles/edit/{request.Id}")]
+    [Put("/articles/{request.Id}")]
     Task<ApiResponse<EditArticleResponse>> EditArticle(EditArticleRequest request);
 
-    [Delete("/articles/delete/{request.Id}")]
+    [Delete("/articles/{request.Id}")]
     Task<ApiResponse<DeleteArticleResponse>> DeleteArticle(DeleteArticleRequest request);
 }

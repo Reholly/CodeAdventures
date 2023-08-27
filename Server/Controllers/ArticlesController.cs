@@ -25,19 +25,19 @@ public class ArticlesController : Controller
         => _mediator.Send(request);
 
     [Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpPost("create")]
+    [HttpPost]
     public Task<CreateArticleResponse> CreateArticle(
         [FromBody] CreateArticleRequest request)
         => _mediator.Send(request);
 
     [Authorize(Policy = "authorsAndPersonnelOnly")]
-    [HttpPut("edit/{id}")]
+    [HttpPut("{id}")]
     public Task<EditArticleResponse> EditArticle(
         [FromBody] EditArticleRequest request)
         => _mediator.Send(request);
 
     [Authorize(Policy = "authorsAndPersonnelOnly")]
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public Task<DeleteArticleResponse> DeleteArticle(
         [FromRoute, FromQuery] DeleteArticleRequest request)
         => _mediator.Send(request);

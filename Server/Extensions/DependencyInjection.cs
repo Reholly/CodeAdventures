@@ -13,5 +13,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<Test>), typeof(TestRepository));
         services.AddScoped(typeof(IRepository<Tiding>), typeof(TidingRepository));
         services.AddScoped(typeof(IRepository<User>), typeof(UserRepository));
+
+        services.AddScoped(typeof(IRepository<>), typeof(DefaultRepository<>));
     }
 }
