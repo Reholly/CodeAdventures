@@ -1,3 +1,4 @@
+using Serilog;
 using Server.Exceptions;
 
 namespace Server.Middlewares;
@@ -19,6 +20,7 @@ public class ErrorHandlingMiddleware : IMiddleware
                 ServiceInvalidOperationException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
+            Log.Error(ex.Message);
         }
     }
 }

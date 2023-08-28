@@ -16,9 +16,9 @@ public class ArticleService : IArticleService
     public async Task<ICollection<Article>> GetArticlesAtPage(int page)
     {
         var articles = await _articlesRepository.GetTableAsync();
-        var pageArticlesCount = int.Parse(_config.GetValue<string>("articlesOnPages")
-                                          ?? throw new InvalidOperationException());
-
+        var configValue = _config.GetValue<string>("articlesOnPages");
+        var pageArticlesCount = int.Parse(configValue ?? throw new InvalidOperationException());
+        
         return articles 
             .Skip((page - 1) * pageArticlesCount)
             .Take(pageArticlesCount)

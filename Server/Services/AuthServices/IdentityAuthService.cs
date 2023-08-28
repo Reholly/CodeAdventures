@@ -69,7 +69,7 @@ public class IdentityAuthService : IAuthService
         
         var token = CreateJwtToken(claims.ToArray());
         var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-
+        
         return new LogInResponse
         {
             IsSucceeded = true, 
@@ -119,5 +119,7 @@ public class IdentityAuthService : IAuthService
         throw new InvalidOperationException("Пользователь уже существует");
     }
 
-    public async Task LogOutAsync() => await _signInManager.SignOutAsync();
+    public async Task LogOutAsync()
+        => await _signInManager.SignOutAsync();
+
 }
