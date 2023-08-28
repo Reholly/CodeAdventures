@@ -1,4 +1,5 @@
 using MediatR;
+using Serilog;
 using Server.Services.TidingServices;
 using Shared.Requests.Index;
 using Shared.Responses.Index;
@@ -18,6 +19,8 @@ public class DeleteTidingHandler : IRequestHandler<DeleteTidingRequest, DeleteTi
     {
         var deletedTiding = await _tidingService.GetTidingByPublicationDateAsync(request.PublicationDate);
         await _tidingService.DeleteTidingAsync(deletedTiding);
+        
+        Log.Information($"Новость от {deletedTiding.PublicationDate} была удалена");
 
         return new DeleteTidingResponse();
     }

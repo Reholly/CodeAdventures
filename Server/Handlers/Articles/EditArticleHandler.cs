@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Serilog;
 using Server.Exceptions;
 using Server.Services.ArticleServices;
 using Server.Services.UserServices;
@@ -28,6 +29,8 @@ public class EditArticleHandler : IRequestHandler<EditArticleRequest, EditArticl
         
         var article = await _articleService.GetArticle(request.Id) 
                       ?? throw new ServiceInvalidOperationException("Статьи с таким id не существует");
+        
+        Log.Information($"Статья с id {article.Id} была изменена");
         
         var articleModel = _mapper.Map<ArticleModel>(article);
         

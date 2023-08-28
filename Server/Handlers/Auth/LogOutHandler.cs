@@ -1,4 +1,5 @@
 using MediatR;
+using Serilog;
 using Server.Services.AuthServices;
 using Shared.Requests.Auth;
 using Shared.Responses.Auth;
@@ -17,6 +18,7 @@ public class LogOutHandler : IRequestHandler<LogOutRequest, LogOutResponse>
     public async Task<LogOutResponse> Handle(LogOutRequest request, CancellationToken cancellationToken)
     {
         await _authService.LogOutAsync();
+        Log.Information($"User with email {request.Email} have been logged out successfully");
         return new LogOutResponse();
     }
 }

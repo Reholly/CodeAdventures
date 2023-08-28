@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Serilog;
 using Server.Services.TidingServices;
 using Shared.DTO;
 using Shared.Requests.Index;
@@ -24,6 +25,8 @@ public class UpdateTidingHandler : IRequestHandler<UpdateTidingRequest, UpdateTi
             request.Title, 
             request.Text, 
             request.PublicationDate);
+        
+        Log.Information($"Новость от {updatedTiding.PublicationDate} была обновлена");
 
         return new UpdateTidingResponse { UpdatedTiding = _mapper.Map<TidingModel>(updatedTiding) };
     }

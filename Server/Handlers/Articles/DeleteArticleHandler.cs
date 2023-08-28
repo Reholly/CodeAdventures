@@ -1,4 +1,5 @@
 using MediatR;
+using Serilog;
 using Server.Exceptions;
 using Server.Services.ArticleServices;
 using Shared.Requests.Articles;
@@ -17,6 +18,8 @@ public class DeleteArticleHandler : IRequestHandler<DeleteArticleRequest, Delete
         var article = await _articleService.GetArticle(request.Article.Id) 
                       ?? throw new ServiceInvalidOperationException("Статьи с таким id не существует");
         await _articleService.DeleteArticle(article);
+        
+        Log.Information($"Статья с id {article.Id} была удалена.");
         
         return new DeleteArticleResponse();
     }
