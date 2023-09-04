@@ -2,7 +2,7 @@
 
 <h1>Cascade Auth State</h1>
 
-<p>@authMessage</p>
+<p>@_authMessage</p>
 <AuthorizeView>
     <Authorized>
         @{
@@ -19,21 +19,21 @@
 </AuthorizeView>
 
 @code {
-    private string authMessage = "The user is NOT authenticated.";
+    private string _authMessage = "The user is NOT authenticated.";
 
     [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (authenticationState is not null)
+        if (AuthenticationState is not null)
         {
-            var authState = await authenticationState;
-            var user = authState?.User;
+            var authState = await AuthenticationState;
+            var user = authState.User;
 
-            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
             {
-                authMessage = $"{user.Identity.Name} is authenticated.";
+                _authMessage = $"{user.Identity.Name} is authenticated.";
             }
         }
     }

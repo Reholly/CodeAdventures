@@ -22,7 +22,7 @@ public class ArticlesController : Controller
     [HttpGet("{id}")]
     public Task<GetArticleResponse> GetArticle(
         [FromBody, FromRoute] GetArticleRequest request)
-        => _mediator.Send(request);
+        => _mediator.Send(request); 
 
     [Authorize(Roles = "Student, Moderator, Admin")]
     [HttpPost]
