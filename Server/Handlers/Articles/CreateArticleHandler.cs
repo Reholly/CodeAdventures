@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Serilog;
 using Server.Services.ArticleServices;
 using Server.Services.UserServices;
 using Shared.DTO;
@@ -41,6 +42,8 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
         
         await _articleService.CreateArticle(article);
         var articleModel = _mapper.Map<ArticleModel>(article);
+        
+        Log.Information($"Article with id {article.Id} has been created");
         
         return new CreateArticleResponse { CreatedArticle = articleModel };
     }

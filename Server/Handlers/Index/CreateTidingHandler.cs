@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Serilog;
 using Server.Services.TidingServices;
 using Shared.DTO;
 using Shared.Requests.Index;
@@ -21,6 +22,8 @@ public class CreateTidingHandler : IRequestHandler<CreateTidingRequest, CreateTi
     public async Task<CreateTidingResponse> Handle(CreateTidingRequest request, CancellationToken cancellationToken)
     {
         var tiding = await _tidingService.CreateTidingAsync(request.Title, request.Text);
+        
+        Log.Information($"Новость с id {tiding.Id} была опубликована в {tiding.PublicationDate}");
 
         return new CreateTidingResponse { CreatedTiding = _mapper.Map<TidingModel>(tiding) };
     }

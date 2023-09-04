@@ -1,17 +1,16 @@
 using System.Text;
 using Data;
-using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Server.Authorization.AuthorizationHandlers;
 using Server.Authorization.AuthorizationRequirements;
 using Server.Extensions;
 using Server.Mapping;
 using Server.Middlewares;
-using Server.Services;
 using Server.Services.ArticleServices;
 using Server.Services.AuthServices;
 using Server.Services.TidingServices;
@@ -95,6 +94,11 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, IdentityAuthService>();
         services.AddScoped<ITidingService, TidingService>();
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .CreateLogger();
     }
 
     public void Configure(IApplicationBuilder app)

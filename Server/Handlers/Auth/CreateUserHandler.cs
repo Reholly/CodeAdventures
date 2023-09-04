@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Serilog;
 using Server.Services.AuthServices;
 using Shared.DTO;
 using Shared.Requests.Auth;
@@ -28,6 +29,8 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserRe
         
         var userDto = _mapper.Map<User, UserModel>(registeredUser);
     
+        Log.Information($"User with email {registeredUser.Email} has been registered");
+        
         return new CreateUserResponse
         {
             CreatedUser =  userDto
