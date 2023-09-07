@@ -17,7 +17,7 @@ public class TidingService : ITidingService
     public async Task<ICollection<Tiding>> GetTidingsAsync()
         => await _tidingsDb.GetTableAsync();
 
-    public async Task<Tiding> UpdateTidingAsync(string title, string text, DateTime tidingKey)
+    public async Task<Tiding> UpdateTidingAsync(string title, string text, DateTimeOffset tidingKey)
     {
         var currentTiding = (await _tidingsDb.GetTableAsync())
             .FirstOrDefault(x => x.PublicationDate == tidingKey) 
@@ -33,7 +33,7 @@ public class TidingService : ITidingService
         return currentTiding;
     }
 
-    public async Task<Tiding> GetTidingByPublicationDateAsync(DateTime publicationDate)
+    public async Task<Tiding> GetTidingByPublicationDateAsync(DateTimeOffset publicationDate)
     {
         var tidings = await GetTidingsAsync();
 
@@ -41,14 +41,18 @@ public class TidingService : ITidingService
                ?? throw new ServiceOperationNullException("Ой-ой, похоже, статьи в такое время не выходило");
     }
 
-    public async Task CreateTidingAsync(string title, string text)
-        => await _tidingsDb.AddAsync(new Tiding
+    public async Task<Tiding> CreateTidingAsync(string title, string text)
+    {
+        var tiding = new Tiding
         {
             Title = title,
             Text = text,
-            PublicationDate = DateTime.Now
-        });
-    
+            PublicationDate = DateTimeOffset.Now
+        };
+        await _tidingsDb.AddAsync(tiding);
+        return tiding;
+    }
+
     public async Task DeleteTidingAsync(Tiding tiding) 
         => await _tidingsDb.RemoveAsync(tiding);
 }

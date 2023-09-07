@@ -1,10 +1,14 @@
 using System.Text;
 using Data;
-using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Server.Authorization.AuthorizationHandlers;
+using Server.Authorization.AuthorizationRequirements;
+using Server.Extensions;
 using Server.Mapping;
 using Server.Middlewares;
 using Server.Services.ArticleServices;
@@ -33,7 +37,7 @@ public class Startup
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connStr));
         
-        services.AddScoped(typeof(IRepository<>), typeof(DefaultRepository<>));
+        services.AddRepositories();
         
         services.AddAutoMapper(typeof(AppMappingProfile));
         services.AddDefaultIdentity<IdentityUser>(options =>
@@ -67,7 +71,11 @@ public class Startup
                     ValidateIssuerSigningKey = true
                 };
             });
-        services.AddAuthorization();
+
+        services.AddTransient<IAuthorizationHandler, AuthorAndPersonnelOnlyHandler>();
+        
+        services.AddAuthorization(opt =>
+            opt.AddPolicy("authorsAndPersonnelOnly", policy => policy.Requirements.Add(new AuthorAndPersonnelOnlyRequirement())));
         services.AddControllers();
         services.AddMediatR(mediatr =>
         {
@@ -86,6 +94,11 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, IdentityAuthService>();
         services.AddScoped<ITidingService, TidingService>();
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .CreateLogger();
     }
 
     public void Configure(IApplicationBuilder app)

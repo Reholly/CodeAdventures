@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Server.Exceptions;
 using Server.Services.ArticleServices;
 using Shared.DTO;
 using Shared.Requests.Articles;
@@ -20,8 +21,10 @@ public class GetArticleHandler : IRequestHandler<GetArticleRequest, GetArticleRe
 
     public async Task<GetArticleResponse> Handle(GetArticleRequest request, CancellationToken cancellationToken)
     {
-        var article = await _articleService.GetArticle(request.Id);
+        var article = await _articleService.GetArticle(request.Id)
+            ?? throw new ServiceInvalidOperationException("Статьи с таким id не существует");
         var articleModel = _mapper.Map<ArticleModel>(article);
+        
         return new GetArticleResponse { Article = articleModel };
     }
 }

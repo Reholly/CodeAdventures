@@ -13,19 +13,18 @@ public class AuthController : Controller
     private readonly IMediator _mediator;
 
     public AuthController(IMediator mediator) => _mediator = mediator;
-    
-    [AllowAnonymous]
+ 
     [HttpPost("login")]
     public Task<LogInResponse> LogIn(
         [FromBody] LogInRequest request) 
         => _mediator.Send(request);
 
+    [Authorize]
     [HttpPost("logout")]
     public Task<LogOutResponse> LogOut(
         [FromBody] LogOutRequest request)
         => _mediator.Send(request);
 
-    [AllowAnonymous]
     [HttpPost("register")]
     public Task<CreateUserResponse> Register(
         [FromBody] CreateUserRequest request) 

@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
 using Data.Entities;
+using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Server.Services.UserServices;
@@ -16,17 +16,20 @@ public class IdentityAuthService : IAuthService
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IUserService _userService;
     private readonly IConfiguration _config;
+    private readonly IRepository<IdentityUserClaim<string>> _claimsDb;
 
     public IdentityAuthService(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
         IUserService userService,
-        IConfiguration config)
+        IConfiguration config, 
+        IRepository<IdentityUserClaim<string>> claimsDb)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _userService = userService;
         _config = config;
+        _claimsDb = claimsDb;
     }
     
     public async Task<LogInResponse> LogInUserAsync(string email, string password)
@@ -48,20 +51,28 @@ public class IdentityAuthService : IAuthService
                 IsSucceeded = false,
                 Errors = new []{ $"Неверный пароль."}
             };
+
+        var identityClaims = (await _claimsDb.GetTableAsync())
+            .Where(x => x.UserId == identityUser.Id)
+            .Select(x => x.ToClaim());
         
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim("Email", email),
             new Claim("Name", email),
-            new Claim(ClaimTypes.Role, "Student")
         };
         
-        var token = CreateJwtToken(claims);
+        foreach (var claim in identityClaims)
+        {
+            claims.Add(claim);
+        }
+        
+        var token = CreateJwtToken(claims.ToArray());
         var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-
+        
         return new LogInResponse
         {
-            IsSucceeded = true,
+            IsSucceeded = true, 
             Token = tokenAsString,
             TokenExpireDate = token.ValidTo
         };
@@ -89,46 +100,26 @@ public class IdentityAuthService : IAuthService
             Email = user.Email
         };
         var userFromDb = await _userService.FindByEmail(user.Email);
+        
         if (userFromDb is null)
         {
             await _userService.CreateUserAsync(user);
-            return await _userManager.CreateAsync(identityUser, password);
+            var result = await _userManager.CreateAsync(identityUser, password);
+            if (result.Succeeded)
+            {
+                await _claimsDb.AddAsync(new IdentityUserClaim<string>
+                {
+                    ClaimType = ClaimTypes.Role,
+                    ClaimValue = "Student",
+                    UserId = identityUser.Id
+                });
+            }
         }
         
         throw new InvalidOperationException("Пользователь уже существует");
     }
 
-    public async Task LogOutAsync() => await _signInManager.SignOutAsync();
+    public async Task LogOutAsync()
+        => await _signInManager.SignOutAsync();
 
-    public async Task<ClaimsPrincipal> GetCurrentUserFromToken(string token)
-    {
-        var identity = new ClaimsIdentity();
-
-        if (!string.IsNullOrEmpty(token))
-        {
-            identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-        }
-
-        var user = new ClaimsPrincipal(identity);
-
-        return user;
-    }
-    
-    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-    {
-        var payload = jwt.Split('.')[1];
-        var jsonBytes = ParseBase64WithoutPadding(payload);
-        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
-    }
-    
-    private byte[] ParseBase64WithoutPadding(string base64)
-    {
-        switch (base64.Length % 4)
-        {
-            case 2: base64 += "=="; break;
-            case 3: base64 += "="; break;
-        }
-        return Convert.FromBase64String(base64);
-    }
 }

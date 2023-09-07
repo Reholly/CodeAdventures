@@ -1,7 +1,6 @@
 @page "/articles"
 @using global::Shared.DTO
 @using global::Shared.Requests.Articles
-@inject IArticlesControllerClient ArticlesControllerClient
 
 <h1>Cascade Auth State</h1>
 
@@ -13,13 +12,35 @@
     }
 }
 
+<InputText @bind-Value="_s"/>
+<button @onclick="EditArticle">Edit article</button>
+
+
 @code {
-    private List<ArticleModel> _articles = new List<ArticleModel>();
+    private List<ArticleModel> _articles = new();
+    private string? _s;
 
     protected override async Task OnInitializedAsync()
     {
-        
-        var response = await ArticlesControllerClient.GetArticles(new GetArticlesRequest());
-        _articles = response.Content!.Articles.ToList();
+        _articles = await Facade.GetArticles(new GetArticlesRequest());
+    }
+
+    private async Task EditArticle()
+    {
+        var text = _s;
+        if (text is not null)
+        {
+            var editedArticle = await Facade.EditArticle(new EditArticleRequest
+            {
+                Description = _articles[0].Description,
+                Id = _articles[0].Id,
+                Text = text,
+                Title = _articles[0].Title
+            });
+            if (editedArticle is not null)
+            {
+                ToastService.ShowToast(editedArticle.Text, ToastLevel.Success);
+            }
+        }
     }
 }

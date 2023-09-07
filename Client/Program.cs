@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Client.ClientSideAuthProviders;
 using Client.ControllerClients;
 using Client.HttpHandlers;
+using Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -25,6 +26,7 @@ internal class Program
             .ConfigureHttpClient(config 
                 => config.BaseAddress = new Uri("http://localhost:5239/api"))
             .AddHttpMessageHandler<AuthHeaderHandler>();
+        
         builder.Services.AddTransient<FacadeApi>();
         
         builder.Services.AddRefitClient<IAuthControllerClient>()
@@ -34,6 +36,7 @@ internal class Program
         
         builder.Services.AddOptions();
         builder.Services.AddAuthorizationCore();
+        builder.Services.AddScoped<ToastService>();
         
         await builder.Build().RunAsync();
     }

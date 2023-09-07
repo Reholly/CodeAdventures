@@ -1,9 +1,8 @@
 using MediatR;
- using Microsoft.AspNetCore.Authorization;
- using Microsoft.AspNetCore.Mvc;
-using Refit;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared.Requests.Articles;
- using Shared.Responses.Articles;
+using Shared.Responses.Articles;
 
 namespace Server.Controllers;
  
@@ -14,34 +13,32 @@ public class ArticlesController : Controller
     private readonly IMediator _mediator;
 
     public ArticlesController(IMediator mediator) => _mediator = mediator;
-
-    [AllowAnonymous]
+    
     [HttpGet]
     public Task<GetArticlesResponse> GetArticles(
         [FromQuery] GetArticlesRequest request)
         => _mediator.Send(request);
-
-    [AllowAnonymous]
+    
     [HttpGet("{id}")]
     public Task<GetArticleResponse> GetArticle(
         [FromBody, FromRoute] GetArticleRequest request)
-        => _mediator.Send(request);
+        => _mediator.Send(request); 
 
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpPost("create")]
+    [Authorize(Roles = "Student, Moderator, Admin")]
+    [HttpPost]
     public Task<CreateArticleResponse> CreateArticle(
-        [FromBody] CreateArticleRequest request) 
+        [FromBody] CreateArticleRequest request)
         => _mediator.Send(request);
 
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpPut("edit/{id}")]
+    [Authorize(Policy = "authorsAndPersonnelOnly")]
+    [HttpPut("{id}")]
     public Task<EditArticleResponse> EditArticle(
         [FromBody] EditArticleRequest request)
-        => _mediator.Send(request with { Token = Request.Headers.Authorization });
+        => _mediator.Send(request);
 
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Student, Moderator, Admin")]
-    [HttpDelete("delete/{id}")]
+    [Authorize(Policy = "authorsAndPersonnelOnly")]
+    [HttpDelete("{id}")]
     public Task<DeleteArticleResponse> DeleteArticle(
         [FromRoute, FromQuery] DeleteArticleRequest request)
-        => _mediator.Send(request with { Token = Request.Headers.Authorization });
+        => _mediator.Send(request);
 }

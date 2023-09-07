@@ -3,16 +3,22 @@
 @inject NavigationManager NavigationManager
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
-        var error =  await Facade.LogOutUser(new LogOutRequest());
-        if (error is not null)
+        if (AuthenticationState is not null)
         {
-            Console.WriteLine(error);
-        }
-        else
-        {
-            NavigationManager.NavigateTo("/auth/login");
+            var user = (await AuthenticationState).User;
+            var logOutSuccess = await Facade.LogOutUser(
+                new LogOutRequest { Email = user.Claims.First(claim => claim.Type == "Email").Value }
+                );
+            if (logOutSuccess)
+            {
+                ToastService.ShowToast("You've been logged out.", ToastLevel.Info);
+                NavigationManager.NavigateTo("/auth/login");
+            }
         }
     }
 }

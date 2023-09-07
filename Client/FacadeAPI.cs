@@ -21,8 +21,7 @@ public class FacadeApi
         IArticlesControllerClient articlesControllerClient, 
         IAuthControllerClient authControllerClient, 
         ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider
-        )
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _articlesControllerClient = articlesControllerClient;
         _authControllerClient = authControllerClient;
@@ -64,18 +63,15 @@ public class FacadeApi
         }
     }
 
-    public async Task<EditArticleResponse?> EditArticle(EditArticleRequest request)
+    public async Task<ArticleModel?> EditArticle(EditArticleRequest request)
     {
-        try
+        var response = await _articlesControllerClient.EditArticle(request);
+        if (!response.IsSuccessStatusCode)
         {
-            var response = await _articlesControllerClient.EditArticle(request);
-            return response.Content;
+            throw response.Error;
         }
-        catch (ApiException e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+
+        return response.Content.EditedArticle;
     }
 
     public async Task<DeleteArticleResponse> DeleteArticle(DeleteArticleRequest request)
@@ -92,38 +88,45 @@ public class FacadeApi
         }
     }
 
-    public Task<ApiResponse<CreateUserResponse>> CreateUser(CreateUserRequest request) 
-        => _authControllerClient.RegisterUser(request);
-    
+    public async Task<bool> CreateUser(CreateUserRequest request)
+    {
+        var response = await _authControllerClient.RegisterUser(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.Error;
+        }
 
-    public async Task<(LogInResponse?, ApiException?)> LogInUser(LogInRequest request)
+        return true;
+    }
+
+
+    public async Task<LogInResponse?> LogInUser(LogInRequest request)
     {
         var response = await _authControllerClient.LogIn(request);
         if (!response.IsSuccessStatusCode)
         {
-            return (null, response.Error);
+            throw response.Error;
         }
 
         await _localStorage.SetItemAsync("token", response.Content.Token.Token);
         await _localStorage.SetItemAsync("expiry", response.Content.Token.ExpireTime);
         await _authenticationStateProvider.GetAuthenticationStateAsync();
             
-        return (response.Content, null);
-
+        return response.Content;
     }
 
-    public async Task<ApiException?> LogOutUser(LogOutRequest request)
+    public async Task<bool> LogOutUser(LogOutRequest request)
     {
         var response = await _authControllerClient.LogOut(request);
         if (!response.IsSuccessStatusCode)
         {
-            return response.Error;
+            throw response.Error;
         }
 
         await _localStorage.RemoveItemAsync("token");
         await _localStorage.RemoveItemAsync("expiry");
         await _authenticationStateProvider.GetAuthenticationStateAsync();
 
-        return null;
+        return true;
     }
 }

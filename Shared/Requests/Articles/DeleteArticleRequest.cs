@@ -8,5 +8,4 @@ public record DeleteArticleRequest : IRequest<DeleteArticleResponse>
 {
     public required int Id { get; init; }
     public required ArticleModel Article { get; init; }
-    public string? Token { get; init; }
 }
