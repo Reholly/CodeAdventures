@@ -1,8 +1,11 @@
-﻿<nav class="navbar fixed-top navbar-expand-md navbar-light mb-1"
+﻿<nav class="navbar fixed-top navbar-expand-lg navbar-light mb-1"
       style="background-color:white; font-size: large">
     <div class="container-fluid">
         <a class="navbar-brand" href="">CodeAdventures</a>
-        <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+        <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse @NavBarCssClass" id="navbarSupportedContent" @onclick="ToggleNavMenu">
             <ul class="navbar-nav nav-pills me-auto mb-6  mb-md-0">
                 <li class="nav-item">
                     <NavMenuItem Item="home"/>
@@ -13,6 +16,14 @@
             </ul>
             
             <ul class="navbar-nav nav-pills ms-auto mb-6  mb-md-0">
+                <AuthorizeView Roles="Moderator">
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavMenuItem Item="moderation"/>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+                
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
@@ -22,14 +33,14 @@
                             <NavMenuItem Item="logout"/>
                         </li>
                     </Authorized>
-                    
+
                     <NotAuthorized>
-                    <li class="nav-item">
-                        <NavMenuItem Item="register"/>
-                    </li>
-                    <li class="nav-item">
-                        <NavMenuItem Item="login"/>
-                    </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="register"/>
+                        </li>
+                        <li class="nav-item">
+                            <NavMenuItem Item="login"/>
+                        </li>
                     </NotAuthorized>
                 </AuthorizeView>
             </ul>
@@ -56,8 +67,9 @@
 
 @code {
     private bool _collapseNavMenu = true;
-   
-    private string? NavMenuCssClass => _collapseNavMenu ? "collapse" : null;
+
+    private string? NavBarCssClass => _collapseNavMenu ? null : "show";
+    private string? NavButtonCssClass => _collapseNavMenu ? "collapsed" : null;
 
     private void ToggleNavMenu()
     {

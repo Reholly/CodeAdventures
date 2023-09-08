@@ -28,6 +28,7 @@ internal class Program
             .AddHttpMessageHandler<AuthHeaderHandler>();
         
         builder.Services.AddTransient<FacadeApi>();
+        builder.Services.AddTransient<FacadeApiMock>();
         
         builder.Services.AddRefitClient<IAuthControllerClient>()
             .ConfigureHttpClient(config 
