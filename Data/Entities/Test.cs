@@ -6,6 +6,6 @@ public class Test
     public User Author { get; set; } = null!;
     public string Description { get; set; } = null!;
     public ICollection<Question> Questions { get; set; } = null!;
-    public DateTime PublicationDate { get; set; }
+    public DateTimeOffset PublicationDate { get; set; }
     public bool IsHide { get; set; } = false;
 }

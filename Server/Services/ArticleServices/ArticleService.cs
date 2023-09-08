@@ -16,9 +16,9 @@ public class ArticleService : IArticleService
     public async Task<ICollection<Article>> GetArticlesAtPage(int page)
     {
         var articles = await _articlesRepository.GetTableAsync();
-        var pageArticlesCount = int.Parse(_config.GetValue<string>("articlesOnPages")
-                                          ?? throw new InvalidOperationException());
-
+        var configValue = _config.GetValue<string>("articlesOnPages");
+        var pageArticlesCount = int.Parse(configValue ?? throw new InvalidOperationException());
+        
         return articles 
             .Skip((page - 1) * pageArticlesCount)
             .Take(pageArticlesCount)
@@ -26,7 +26,12 @@ public class ArticleService : IArticleService
     }
 
     public async Task<Article?> GetArticle(int id)
-        => await _articlesRepository.GetAsync(id);
+    {
+        var articles = await _articlesRepository.GetTableAsync();
+        
+        return articles.FirstOrDefault(u => u.Id == id);
+    }
+       
 
     public async Task<Article> EditArticle(int id, string title, string text, string description)
     {
@@ -44,7 +49,7 @@ public class ArticleService : IArticleService
     }
     
     public async Task<ICollection<Article>> GetArticles() 
-        => await _articlesRepository.GetTableAsync();
+        => (await _articlesRepository.GetTableAsync()).ToList();
     
     public async Task CreateArticle(Article article) 
         => await _articlesRepository.AddAsync(article);

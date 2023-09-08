@@ -1,6 +1,3 @@
 namespace Shared.Responses.Articles;
 
-public record DeleteArticleResponse
-{
-    
-}
+public record DeleteArticleResponse;

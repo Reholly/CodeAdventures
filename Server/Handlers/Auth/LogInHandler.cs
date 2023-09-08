@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Serilog;
 using Server.Exceptions;
 using Server.Services.AuthServices;
 using Server.Services.UserServices;
@@ -27,13 +28,18 @@ public class LogInHandler : IRequestHandler<LogInRequest, LogInResponse>
     {
         var loginModel = request.LoginModel;
         var loggedInResponse = await _authService.LogInUserAsync(loginModel.Email, loginModel.Password);
+        
         if (loggedInResponse.IsSucceeded == false)
         {
             throw new AuthOperationException(loggedInResponse.Errors.ToArray()[0]);
         }
-        var user = await _userService.FindByEmail(loginModel.Email);
+        
+        var user = await _userService.FindByEmail(loginModel.Email)
+            ?? throw new ServiceInvalidOperationException("Пользователя с таким email не существует");
 
         var userDto = _mapper.Map<User, UserModel>(user);
+        
+        Log.Information($"User with email {request.LoginModel.Email} has been logged in");
         
         return new LogInResponse
         {

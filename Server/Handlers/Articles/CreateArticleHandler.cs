@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Serilog;
 using Server.Services.ArticleServices;
 using Server.Services.UserServices;
 using Shared.DTO;
@@ -27,27 +28,23 @@ public class CreateArticleHandler : IRequestHandler<CreateArticleRequest, Create
     
     public async Task<CreateArticleResponse> Handle(CreateArticleRequest request, CancellationToken cancellationToken)
     {
-        try
+        var user = await _userService.FindByEmail(request.AuthorEmail);
+        
+        var article = new Article
         {
-            var article = new Article
-            {
-                Author = (await _userService.FindById(request.AuthorId))!,
-                Description = request.Description,
-                EditDate = request.CreatingTime,
-                PublicationDate = DateTime.Now,
-                Title = request.Title,
-                Text = request.Text
-            };
-            await _articleService.CreateArticle(article);
-            var articleModel = _mapper.Map<ArticleModel>(article);
-            return new CreateArticleResponse { CreatedArticle = articleModel };
-        }
-        catch (Exception e)
-        {
-            return new CreateArticleResponse
-            {
-                CreatedArticle = null
-            };
-        }
+            Author = user!,
+            Description = request.Description,
+            EditDate = request.CreatingTime,
+            PublicationDate = request.CreatingTime,
+            Title = request.Title,
+            Text = request.Text
+        };
+        
+        await _articleService.CreateArticle(article);
+        var articleModel = _mapper.Map<ArticleModel>(article);
+        
+        Log.Information($"Article with id {article.Id} has been created");
+        
+        return new CreateArticleResponse { CreatedArticle = articleModel };
     }
 }

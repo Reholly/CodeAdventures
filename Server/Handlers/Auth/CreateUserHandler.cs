@@ -1,6 +1,7 @@
 using AutoMapper;
 using Data.Entities;
 using MediatR;
+using Serilog;
 using Server.Services.AuthServices;
 using Shared.DTO;
 using Shared.Requests.Auth;
@@ -23,25 +24,16 @@ public class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserRe
     {
         var model = request.RegisterModel;
         var registeredUser = _mapper.Map<RegisterModel, User>(model);
-
-        try
-        {
-            var user = await _authService.RegisterUserAsync(registeredUser, model.Password);
-            
-            var userDto = _mapper.Map<User, UserModel>(registeredUser);
+    
+        await _authService.RegisterUserAsync(registeredUser, model.Password);
         
-            return new CreateUserResponse
-            {
-                UserModel =  userDto
-            };
-        }
-        catch (InvalidOperationException exception)
-        {
-            return new CreateUserResponse
-            {
-                UserModel = null
-            };
-        }
+        var userDto = _mapper.Map<User, UserModel>(registeredUser);
+    
+        Log.Information($"User with email {registeredUser.Email} has been registered");
         
+        return new CreateUserResponse
+        {
+            CreatedUser =  userDto
+        };
     }
 }
